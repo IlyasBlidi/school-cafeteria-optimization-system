@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        zrek: "#fa541c",
-        limouni: "#0048FF",
+        limoni: "#fa541c",
+        zrek: "#0048FF",
         byed: "#F6F4EE",
         faragh: "#000"
       },
