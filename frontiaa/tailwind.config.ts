@@ -9,12 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        sparkler: "#fa541c",
-        phoenix: "#f6f4ee",
-        dobby: "#000"
+        zrek: "#fa541c",
+        limouni: "#0048FF",
+        byed: "#F6F4EE",
+        faragh: "#000"
       },
       fontFamily: {
         ibm: ["IBM Plex Sans Arabic", "sans-serif"],
+        bixie: "BIXIE",
+        tido: "TIDO",
       },
     },
   },
