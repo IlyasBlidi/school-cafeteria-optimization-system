@@ -1,9 +1,66 @@
-import Image from "next/image";
+import { FC } from "react";
 
-export default function Home() {
+const Home: FC = () => {
   return (
-    <div className="text-black font-tido font-bold text-center text-[160px]">
-            مروان
-    </div>
+    <main className="font-general-sans flex flex-col items-center justify-between flex-shrink-0">
+      <div className="min-h-screen h-96 w-full flex flex-col justify-between">
+        <section className="flex items-center justify-center gap-x-24 font-medium w-full">
+          <p>Estidio</p>
+          <p>Artistas</p>
+          <div className="bg-black text-white flex flex-col rounded-b-md px-5 py-2">
+            <p>MomdayClub</p>
+            <p className="text-[10px] self-end">TATTOO</p>
+          </div>
+          <p>What?</p>
+          <p>Contacta</p>
+        </section>
+        <section className="font-semibold text-4xl flex flex-col items-center w-full">
+          <div>
+            <p>Momday</p>
+            <p>Club</p>
+            <p className="font-normal text-sm">TATTOO</p>
+          </div>
+        </section>
+        <section className="flex items-center justify-between w-full text-[13px] p-5">
+          <div>
+            <p>Estamos en Las Palmas de Gran Canaria Espana</p>
+            <p>Cal Leon Castillo numero CP: 35003</p>
+            <p>Pasate y nos cuentas tu siguiente tattoo </p>
+          </div>
+          <div>Hazte tu propio tattoo clickando</div>
+        </section>
+      </div>
+      <footer className="flex flex-col gap-y-6 w-full p-5">
+        <p>We would like to hear from you!</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p>Oslo;</p>
+            <div>
+              <p>oslo(at)bleed.com</p>
+              <p>47 993 06 000</p>
+            </div>
+            <div>
+              <p>Thorvald Meyers gate 9.</p>
+              <p>0555 Oslo, Norway</p>
+            </div>
+            <p>bleed</p>
+          </div>
+          <div>
+            <p>Vienna;</p>
+            <div>
+              <p>vienna(at)bleed.com</p>
+              <p>43 993 06 000</p>
+            </div>
+            <div>
+              <p>Thorvald Meyers gate 9.</p>
+              <p>0555 Oslo, Norway</p>
+            </div>
+            <p>OSL/VIE</p>
+          </div>
+        </div>
+      </footer>
+    </main>
   );
-}
+};
+
+export default Home;

@@ -15,11 +15,9 @@ const config: Config = {
   			byed: '#F6F4EE',
   			faragh: '#000'
   		},
-  		fontFamily: {
-  			ibm: ["IBM Plex Sans Arabic", "sans-serif"],
-  			bixie: 'BIXIE',
-  			tido: 'TIDO'
-  		},
+      fontFamily: {
+        "general-sans": ["General Sans", "sans-serif"],
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
