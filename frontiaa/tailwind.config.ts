@@ -12,12 +12,10 @@ const config: Config = {
         limoni: "#fa541c",
         zrek: "#0048FF",
         byed: "#F6F4EE",
-        faragh: "#000"
+        faragh: "#000",
       },
       fontFamily: {
-        ibm: ["IBM Plex Sans Arabic", "sans-serif"],
-        bixie: "BIXIE",
-        tido: "TIDO",
+        "general-sans": ["General Sans", "sans-serif"],
       },
     },
   },

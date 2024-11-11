@@ -1,102 +1,66 @@
-"use client";
-import styles from "./page.module.scss";
-import Image from "next/image";
-import { MouseEvent, useRef } from "react";
-import gsap from "gsap";
-import {
-  floating1,
-  floating2,
-  floating3,
-  floating4,
-  // floating5,
-  // floating6,
-  // floating7,
-  // floating8,
-} from "../data/data";
+import { FC } from "react";
 
-export default function Home() {
-  const plane1 = useRef(null);
-  const plane2 = useRef(null);
-  const plane3 = useRef(null);
-  let requestAnimationFrameId: number | null = null;
-  let xForce = 0;
-  let yForce = 0;
-  const easing = 0.08;
-  const speed = 0.01;
-
-  const manageMouseMove = (e: MouseEvent<HTMLElement, MouseEvent>) => {
-    const { movementX, movementY } = e;
-    xForce += movementX * speed;
-    yForce += movementY * speed;
-
-    if (requestAnimationFrameId == null) {
-      requestAnimationFrameId = requestAnimationFrame(animate);
-    }
-  };
-
-  const lerp = (start: number, target: number, amount: number) =>
-    start * (1 - amount) + target * amount;
-
-  const animate = () => {
-    xForce = lerp(xForce, 0, easing);
-    yForce = lerp(yForce, 0, easing);
-    gsap.set(plane1.current, { x: `+=${xForce}`, y: `+=${yForce}` });
-    gsap.set(plane2.current, {
-      x: `+=${xForce * 0.5}`,
-      y: `+=${yForce * 0.5}`,
-    });
-    gsap.set(plane3.current, {
-      x: `+=${xForce * 0.25}`,
-      y: `+=${yForce * 0.25}`,
-    });
-
-    if (Math.abs(xForce) < 0.01) xForce = 0;
-    if (Math.abs(yForce) < 0.01) yForce = 0;
-
-    if (xForce != 0 || yForce != 0) {
-      requestAnimationFrame(animate);
-    } else {
-      cancelAnimationFrame(requestAnimationFrameId);
-      requestAnimationFrameId = null;
-    }
-  };
-
+const Home: FC = () => {
   return (
-    <main
-      onMouseMove={(e) => {
-        manageMouseMove(e);
-      }}
-      className={`!bg-faragh ${styles.main}`}
-    >
-      <div ref={plane1} className={styles.plane}>
-        <Image src={floating1} alt="image" width={300} />
-        <Image src={floating2} alt="image" width={300} />
-        <Image src={floating4} alt="image" width={225} />
+    <main className="font-general-sans flex flex-col items-center justify-between flex-shrink-0">
+      <div className="min-h-screen h-96 w-full flex flex-col justify-between">
+        <section className="flex items-center justify-center gap-x-24 font-medium w-full">
+          <p>Estidio</p>
+          <p>Artistas</p>
+          <div className="bg-black text-white flex flex-col rounded-b-md px-5 py-2">
+            <p>MomdayClub</p>
+            <p className="text-[10px] self-end">TATTOO</p>
+          </div>
+          <p>What?</p>
+          <p>Contacta</p>
+        </section>
+        <section className="font-semibold text-4xl flex flex-col items-center w-full">
+          <div>
+            <p>Momday</p>
+            <p>Club</p>
+            <p className="font-normal text-sm">TATTOO</p>
+          </div>
+        </section>
+        <section className="flex items-center justify-between w-full text-[13px] p-5">
+          <div>
+            <p>Estamos en Las Palmas de Gran Canaria Espana</p>
+            <p>Cal Leon Castillo numero CP: 35003</p>
+            <p>Pasate y nos cuentas tu siguiente tattoo </p>
+          </div>
+          <div>Hazte tu propio tattoo clickando</div>
+        </section>
       </div>
-      <div ref={plane2} className={styles.plane}>
-        <Image src={floating4} alt="image" width={250} />
-        <Image src={floating1} alt="image" width={200} />
-        <Image src={floating2} alt="image" width={225} />
-      </div>
-      <div ref={plane3} className={styles.plane}>
-        <Image src={floating3} alt="image" width={150} />
-        {/* <Image src={floating5} alt="image" width={200} /> */}
-      </div>
-      <div
-        className={`flex flex-col items-center gap-y-10 w-full ${styles.title}`}
-      >
-        <h1 className="text-byed font-tido text-[160px]">السارعة</h1>
-        <p className="text-byed">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
-          voluptates, maxime incidunt reprehenderit praesentium iure nam, autem
-          asperiores laudantium aliquid rerum ea ratione, laboriosam suscipit!
-          Optio accusamus iusto modi cupiditate.
-        </p>
-        <div className="w-full flex items-center justify-center gap-10 text-byed font-bixie text-[35px]">
-          <button className="bg-zrek w-1/4 rounded-lg">دخول</button>
-          <button className="bg-zrek w-1/4 rounded-lg">انضمام</button>
+      <footer className="flex flex-col gap-y-6 w-full p-5">
+        <p>We would like to hear from you!</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p>Oslo;</p>
+            <div>
+              <p>oslo(at)bleed.com</p>
+              <p>47 993 06 000</p>
+            </div>
+            <div>
+              <p>Thorvald Meyers gate 9.</p>
+              <p>0555 Oslo, Norway</p>
+            </div>
+            <p>bleed</p>
+          </div>
+          <div>
+            <p>Vienna;</p>
+            <div>
+              <p>vienna(at)bleed.com</p>
+              <p>43 993 06 000</p>
+            </div>
+            <div>
+              <p>Thorvald Meyers gate 9.</p>
+              <p>0555 Oslo, Norway</p>
+            </div>
+            <p>OSL/VIE</p>
+          </div>
         </div>
-      </div>
+      </footer>
     </main>
   );
-}
+};
+
+export default Home;
