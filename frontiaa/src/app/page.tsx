@@ -30,10 +30,10 @@ const Home: FC = () => {
           <div>Hazte tu propio tattoo clickando</div>
         </section>
       </div>
-      <footer className="flex flex-col gap-y-6 w-full p-5">
-        <p>We would like to hear from you!</p>
-        <div className="flex items-center justify-between">
-          <div>
+      <footer className="bg-black text-white flex flex-col gap-y-16 w-full px-14 py-5 text-[12px]">
+        <p className="text-[20px] font-semibold">We would like to hear from you!</p>
+        <div className="flex items-center gap-x-80 h-full font-mono">
+          <div className="flex flex-col gap-y-5">
             <p>Oslo;</p>
             <div>
               <p>oslo(at)bleed.com</p>
@@ -45,7 +45,7 @@ const Home: FC = () => {
             </div>
             <p>bleed</p>
           </div>
-          <div>
+          <div className="flex flex-col gap-y-5">
             <p>Vienna;</p>
             <div>
               <p>vienna(at)bleed.com</p>
@@ -56,6 +56,18 @@ const Home: FC = () => {
               <p>0555 Oslo, Norway</p>
             </div>
             <p>OSL/VIE</p>
+          </div>
+          <div className="flex flex-col justify-between self-stretch">
+            <p>Follow us;</p>
+            <div>
+              <p></p>
+              <p></p>
+            </div>
+            <div>
+              <p></p>
+              <p>(at)bleed.studio</p>
+            </div>
+            <p>CET 15:33:07</p>
           </div>
         </div>
       </footer>

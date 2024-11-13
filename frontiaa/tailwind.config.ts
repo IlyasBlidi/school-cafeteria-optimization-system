@@ -1,29 +1,29 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-    darkMode: ["class"],
-    content: [
+  darkMode: ["class"],
+  content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-  	extend: {
-  		colors: {
-  			zrek: '#fa541c',
-  			limouni: '#0048FF',
-  			byed: '#F6F4EE',
-  			faragh: '#000'
-  		},
+    extend: {
+      colors: {
+        zrek: "#fa541c",
+        limouni: "#0048FF",
+        byed: "#F6F4EE",
+        faragh: "#000",
+      },
       fontFamily: {
         "general-sans": ["General Sans", "sans-serif"],
       },
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		}
-  	}
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
   },
   plugins: [require("tailwindcss-animate")],
 };
