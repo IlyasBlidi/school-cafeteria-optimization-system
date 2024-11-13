@@ -11,7 +11,7 @@ interface ComandStateProps {
 
 
 
-const ComandState: React.FC<ComandStateProps> = ({ isActive, text, color }) => {
+const ComandState: React.FC<ComandStateProps> = ({ isActive, text, color ,onClick}) => {
 
 
   const getColorClass = (colorProp: string) => {
@@ -31,13 +31,13 @@ const ComandState: React.FC<ComandStateProps> = ({ isActive, text, color }) => {
 
 
   return (
-    <div
+    <div  onClick={onClick}
       className={`flex rounded-lg items-center ${
         isActive ? 'bg-faragh text-byed' : 'bg-byed text-faragh'
-      } gap-2 p-2 h-full text-base font-general-sans`}
+      } gap-2 p-2 py-2 h-full text-base font-general-sans`}
     >
       <div
-        className={`rounded-full w-11 h-11 ${circleClass}  flex items-center justify-center`}
+        className={`rounded-full w-10 h-10 ${circleClass}  flex items-center justify-center`}
       >
         5
       </div>
