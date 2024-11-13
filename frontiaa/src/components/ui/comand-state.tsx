@@ -34,14 +34,14 @@ const ComandState: React.FC<ComandStateProps> = ({ isActive, text, color }) => {
     <div
       className={`flex rounded-lg items-center ${
         isActive ? 'bg-faragh text-byed' : 'bg-byed text-faragh'
-      } gap-2 p-2 h-full text-base`}
+      } gap-2 p-2 h-full text-base font-general-sans`}
     >
       <div
-        className={`rounded-full w-10 h-10 ${circleClass}  flex items-center justify-center`}
+        className={`rounded-full w-11 h-11 ${circleClass}  flex items-center justify-center`}
       >
         5
       </div>
-      <span className="w-5/6 ">{text}</span>
+      <span className="w-4/6 ">{text}</span>
     </div>
   );
 };
