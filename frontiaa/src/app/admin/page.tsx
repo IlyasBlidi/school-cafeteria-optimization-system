@@ -1,7 +1,6 @@
 "use client"
 import { FC, useState } from "react";
 import { Sidebar } from "@/components/ui/sidebar";
-import CommandStateBar from "@/components/ui/CommandStateBar";
 import NewOrder from "@/components/ui/newOrder";
 import { Order, OrderStatus } from "@/types/order";
 
@@ -95,11 +94,10 @@ const Home: FC = () => {
   };
 
   return (
-    <div className="font-general-sans flex flex-row h-screen w-screen">
+    <div className="font-general-sans flex flex-row h-screen w-screen bg-[#f2f2f2]">
       <Sidebar />
-      <div className="flex-1 h-full overflow-hidden">
+      <div className="flex-1 h-full w-full overflow-hidden">
         <div className="h-full flex flex-col p-6 gap-[4rem]">
-          <CommandStateBar />          
           <div className="flex-1 overflow-auto">
             <div className="grid grid-cols-4 gap-6">
               {(["new", "cooking", "ready", "completed"] as const).map((status) => (

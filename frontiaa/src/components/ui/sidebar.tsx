@@ -38,9 +38,9 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-[18rem] p-5 font-medium bg-[#1d1d1f] text-[#f3f3eb]">
-      <div className="font-medium text-[45px] px-6 mb-[4rem]">
-        Mexicano
+    <div className="flex flex-col h-full w-[20%] p-5 font-medium bg-white text-black">
+      <div className="font-bold text-zrek text-[45px] px-6 mb-[4rem]">
+        wafuu
       </div>
       <div className="px-6">
         <div className="text-sm font-light">{formatDate(dateTime)}</div>
