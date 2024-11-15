@@ -38,13 +38,13 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col h-[97vh] w-[15rem] m-4 rounded-[0.8rem] p-5 font-medium bg-[#1d1d1f] text-[#f3f3eb]">
-      <div className="font-semibold text-[22px] px-8 mb-[5rem]">
-        Montocerloo
+    <div className="flex flex-col h-full w-[18rem] p-5 font-medium bg-[#1d1d1f] text-[#f3f3eb]">
+      <div className="font-medium text-[45px] px-6 mb-[4rem]">
+        Mexicano
       </div>
       <div className="px-6">
         <div className="text-sm font-light">{formatDate(dateTime)}</div>
-        <div className="text-2xl font-medium mb-[4rem] ">
+        <div className="text-2xl font-medium mb-[8rem] ">
           {formatTime(dateTime)}
         </div>
       </div>
