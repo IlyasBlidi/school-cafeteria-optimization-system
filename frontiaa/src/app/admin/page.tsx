@@ -95,16 +95,16 @@ const Home: FC = () => {
   };
 
   return (
-    <div className="font-general-sans flex flex-row h-screen w-screen">
+    <div className="font-general-sans flex flex-row h-screen w-screen ">
       <Sidebar />
-      <div className="flex-1 h-full overflow-hidden">
+      <div className="flex-1 h-full overflow-hidden  ">
         <div className="h-full flex flex-col p-6 gap-[4rem]">
-          <CommandStateBar />          
+                  
           <div className="flex-1 overflow-auto">
             <div className="grid grid-cols-4 gap-6">
               {(["new", "cooking", "ready", "completed"] as const).map((status) => (
                 <div key={status} className="space-y-4">
-                  <h2 className="text-lg font-medium text-gray-600">
+                  <h2 className="text-base font-medium bg-byed w-full h-14 p-2 font-general-sans rounded-lg text-faragh">
                     {status.charAt(0).toUpperCase() + status.slice(1)} ({ordersByStatus[status].length})
                   </h2>
                   {ordersByStatus[status].map(order => (
