@@ -25,15 +25,15 @@ import {
         items: [
           {
             title: "Active Orders",
-            url: "/orders/active",
+            url: "/user/orders/active",
           },
           {
             title: "Order History",
-            url: "/orders/history",
+            url: "/user/orders/history",
           },
           {
             title: "Daily Stats",
-            url: "/orders/stats",
+            url: "/user/orders/stats",
           },
         ],
       },
@@ -41,37 +41,27 @@ import {
         title: "Kitchen",
         url: "/kitchen",
         icon: KanbanSquare,
+        isActive: true,
         items: [
           {
-            title: "Queue",
-            url: "/kitchen/queue",
+            title: "Staff",
+            url: "/kitchen/staff",
           },
           {
             title: "Inventory",
             url: "/kitchen/inventory",
-          },
-          {
-            title: "Reports",
-            url: "/kitchen/reports",
-          },
+          }
         ],
       },
       {
         title: "Menu",
         url: "/menu",
         icon: BookOpen,
+        isActive: true,
         items: [
           {
-            title: "Categories",
-            url: "/menu/categories",
-          },
-          {
             title: "Items",
-            url: "/menu/items",
-          },
-          {
-            title: "Specials",
-            url: "/menu/specials",
+            url: "/user",
           },
           {
             title: "Availability",
@@ -83,11 +73,8 @@ import {
         title: "Settings",
         url: "/settings",
         icon: Settings2,
+        isActive: true,
         items: [
-          {
-            title: "General",
-            url: "/settings/general",
-          },
           {
             title: "Staff",
             url: "/settings/staff",
@@ -114,24 +101,7 @@ import {
         url: "/feedback",
         icon: Send,
       },
-    ],
-    projects: [
-      {
-        name: "Main Kitchen",
-        url: "/locations/main-kitchen",
-        icon: UtensilsCrossed,
-      },
-      {
-        name: "Coffee Corner",
-        url: "/locations/coffee-corner",
-        icon: Coffee,
-      },
-      {
-        name: "Campus Map",
-        url: "/locations/map",
-        icon: Map,
-      },
-    ],
+    ]
   };
   
   export default data;

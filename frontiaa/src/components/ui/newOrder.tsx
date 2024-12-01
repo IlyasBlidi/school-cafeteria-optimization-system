@@ -57,7 +57,7 @@ const NewOrder = ({
   const currentStatus = statusConfig[status];
 
   return (
-    <div className="bg-byed rounded-lg p-4 space-y-4">
+    <div className="rounded-lg p-4 space-y-4 border shadow">
       <div className="flex justify-between items-start">
         <div className="flex gap-3 items-start">
           <div className="rounded-full border-2 border-green-400 p-2 text-xs w-10 h-10 flex items-center justify-center">

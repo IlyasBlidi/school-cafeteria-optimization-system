@@ -1,7 +1,6 @@
 "use client";
 import { FC, useState } from "react";
 import {
-  Sidebar,
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
@@ -10,7 +9,6 @@ import NewOrder from "@/components/ui/newOrder";
 import { Order, OrderStatus } from "@/types/order";
 import { AppSidebar } from "@/components/ui/appSidebar/appSidebar";
 import { Separator } from "@radix-ui/react-separator";
-import { menuCategories } from "../user/utils/menuCategories";
 
 const Home: FC = () => {
   // @Marouane : list ghyr bach ntesti
