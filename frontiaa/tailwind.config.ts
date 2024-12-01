@@ -1,8 +1,8 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-    darkMode: ["class"],
-    content: [
+  darkMode: ["class"],
+  content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,12 +13,20 @@ const config: Config = {
   			zrek: '#fa541c',
   			limouni: '#0048FF',
   			byed: '#F6F4EE',
-  			faragh: '#000'
+  			faragh: '#000',
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
+  			}
   		},
   		fontFamily: {
-  			ibm: ["IBM Plex Sans Arabic", "sans-serif"],
-  			bixie: 'BIXIE',
-  			tido: 'TIDO'
+  			'general-sans': ["General Sans", "sans-serif"]
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
