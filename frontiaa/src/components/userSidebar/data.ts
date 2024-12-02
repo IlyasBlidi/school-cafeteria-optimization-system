@@ -2,7 +2,6 @@ import {
   CreditCard,
   UtensilsCrossed,
   Clock,
-  History,
   LifeBuoy,
   Send,
   Home,
@@ -11,8 +10,8 @@ import {
 
 const data = {
   user: {
-    name: "wufu",
-    email: "wufu@usms.ac.ma",
+    name: "Marouane",
+    email: "marouane@usms.ac.ma",
     avatar: "/avatars/frew.jpg",
   },
   navMain: [

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { NavMain } from "@/components/ui/navMain"
-import { NavProjects } from "@/components/ui/navProject"
 import { NavSecondary } from "@/components/ui/navSecondary"
 import { NavUser } from "@/components/ui/navUser"
 import {
