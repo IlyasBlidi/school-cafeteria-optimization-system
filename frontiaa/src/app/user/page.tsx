@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Button } from "@/components/ui/button";
 import { UtensilsCrossed } from "lucide-react";
 
+// Category Icons mapping
 const categoryIcons: { [key: string]: string } = {
   "Breakfast": "🍳",
   "Lunch": "🍱",
@@ -41,6 +42,7 @@ interface MenuCategoriesProps {
   activeCategory: string;
   onCategoryChange: (id: string) => void;
 }
+
 
 const MenuCategories: React.FC<MenuCategoriesProps> = ({
   activeCategory,
@@ -106,6 +108,7 @@ const MenuCategories: React.FC<MenuCategoriesProps> = ({
   );
 };
 
+
 const MenuPage = () => {
   const [activeCategory, setActiveCategory] = useState("lunch");
   const [articles, setArticles] = useState<Article[]>([]);
@@ -121,12 +124,13 @@ const MenuPage = () => {
       const filtered = articles.filter(article => article.category.id === activeCategory);
       setFilteredArticles(filtered);
     }
-  }, [activeCategory, articles]);
+  }, [activeCategory]);
 
   async function fetchArticles() {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/articles");
       setArticles(response.data);
+      setFilteredArticles(response.data);
     } catch (error) {
       console.error("Error fetching articles:", error);
     }
