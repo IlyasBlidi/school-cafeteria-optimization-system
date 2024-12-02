@@ -1,7 +1,11 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "./button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./card";
-import { Clock, Utensils, AlertCircle } from 'lucide-react';
+'use client';
+
+import React, { useState } from 'react';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Clock } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 interface Category {
   id: string;
@@ -16,20 +20,38 @@ interface Article {
   price: number;
   category: Category;
   preparationTime?: string;
-  calories?: number;
   allergens?: string[];
   available?: boolean;
   dietaryInfo?: string[];
 }
 
-interface DishCardProps {
+export interface OrderedDish {
   article: Article;
+  quantity: number;
 }
 
-export const DishCard: React.FC<DishCardProps> = ({ article }) => {
+interface DishCardProps {
+  article: Article;
+  onAddToOrder: (dish: OrderedDish) => void;
+}
+
+export const DishCard: React.FC<DishCardProps> = ({ article, onAddToOrder }) => {
   const defaultPrep = "15-20";
   const defaultAllergens = ["Moroccan dish"];
   const defaultDietary = ["Ask about dietary restrictions"];
+  const { toast } = useToast();
+  const [quantity, setQuantity] = useState(1);
+
+  const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
+
+  const handleAddToOrder = () => {
+    onAddToOrder({ article, quantity });
+    toast({
+      title: `${article.title} added to order`,
+      description: `Quantity: ${quantity}`,
+    });
+  };
 
   return (
     <Card className="w-72 border hover:shadow-lg transition-shadow duration-200 flex flex-col h-full p-4">
@@ -52,6 +74,27 @@ export const DishCard: React.FC<DishCardProps> = ({ article }) => {
           <Clock className="h-4 w-4" />
           <span className="text-sm">{article.preparationTime || defaultPrep} mins</span>
         </div>
+      </div>
+
+      {/* Quantity Controls */}
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <Button 
+          onClick={decreaseQuantity} 
+          variant="outline"
+          size="sm"
+          className="h-8 w-8 rounded-full"
+        >
+          -
+        </Button>
+        <span className="text-lg font-medium w-8 text-center">{quantity}</span>
+        <Button 
+          onClick={increaseQuantity} 
+          variant="outline"
+          size="sm"
+          className="h-8 w-8 rounded-full"
+        >
+          +
+        </Button>
       </div>
 
       <div className="flex-1 space-y-2">
@@ -80,7 +123,10 @@ export const DishCard: React.FC<DishCardProps> = ({ article }) => {
         </div>
       </div>
 
-      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors mt-4">
+      <Button 
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors mt-4"
+        onClick={handleAddToOrder}
+      >
         Add to Order
       </Button>
     </Card>
