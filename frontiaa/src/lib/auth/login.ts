@@ -8,10 +8,13 @@ export async function handleLogin(
   router: ReturnType<typeof useRouter>
 ) {
   try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/authenticate", {
-      email,
-      password,
-    });
+    const response = await axios.post(
+      "http://localhost:8080/api/v1/auth/authenticate",
+      {
+        email,
+        password,
+      }
+    );
 
     if (response.status === 200) {
       localStorage.setItem("user", JSON.stringify(response.data));
