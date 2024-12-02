@@ -1,27 +1,47 @@
 "use client";
 
 import Link from "next/link";
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { handleLogin } from "@/lib/auth/login";
-import { useRouter } from "next/navigation";
+import { authService } from "@/services/authService";
+import { Role } from "@/api/enums";
 
 export default function AuthenticationPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   async function onLoginClick() {
+    setError(null); // Reset error before attempting login
     try {
-      await handleLogin(email, password, router);
-    } catch (error) {
-      console.error("Login error:", error);
+      const authResponse = await authService.login({ email, password });
+
+      // Redirect based on user role
+      const { role } = authResponse;
+      if (role === Role.MANAGER) {
+        router.push("/admin");
+      } else if (role === Role.USER) {
+        router.push("/user");
+      } else {
+        setError("Unknown role. Please contact support.");
+      }
+    } catch (error: any) {
+      console.error("Login failed:", error);
+
+      // Handle error
+      if (error.response?.status === 403) {
+        setError("Invalid credentials. Please try again.");
+      } else {
+        setError("Please fill the form with the correct info.");
+      }
     }
   }
+
   return (
     <div className="flex h-screen font-general-sans w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-xl">
@@ -56,6 +76,7 @@ export default function AuthenticationPage() {
                 required
               />
             </div>
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
             <Button type="submit" className="w-full" onClick={onLoginClick}>
               Login
             </Button>
