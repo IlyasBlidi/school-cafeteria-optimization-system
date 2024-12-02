@@ -36,7 +36,7 @@ const DishCard = () => {
         <div className="space-y-4">
           {/* Price and Preparation Time */}
           <div className="flex justify-between items-center">
-            <span className="text-2xl font-bold text-zrek">
+            <span className="text-2xl font-bold text-limouni">
               ${dish.price.toFixed(2)}
             </span>
             <div className="flex items-center gap-1 text-gray-600">
@@ -77,7 +77,7 @@ const DishCard = () => {
 
       <CardFooter className="flex justify-between">
         {dish.available ? (
-          <Button className="w-full bg-zrek hover:bg-green-700">
+          <Button className="w-full bg-limouni hover:bg-green-700">
             Add to Order
           </Button>
         ) : (

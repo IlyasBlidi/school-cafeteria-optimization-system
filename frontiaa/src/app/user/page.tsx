@@ -5,8 +5,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useState } from "react";
-import { Category, menuCategories } from "./utils/menuCategories";
-import { AppSidebar } from "@/components/ui/appSidebar/appSidebar";
+import { Category, menuCategories } from "../../lib/menuCategories";
+import { AppSidebar } from "@/components/userSidebar/appSidebar";
 import { Separator } from "@/components/ui/separator";
 import DishCard from "@/components/ui/dishCard";
 
