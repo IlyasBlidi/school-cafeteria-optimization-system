@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import NewOrder from "@/components/ui/newOrder";
 import { Order, OrderStatus } from "@/types/order";
-import { AppSidebar } from "@/components/ui/appSidebar/appSidebar";
+import { AppSidebar } from "@/components/adminSidebar/appSidebar";
 import { Separator } from "@radix-ui/react-separator";
 
 const Home: FC = () => {

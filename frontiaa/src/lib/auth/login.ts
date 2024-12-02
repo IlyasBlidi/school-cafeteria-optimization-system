@@ -14,10 +14,7 @@ export async function handleLogin(
     });
 
     if (response.status === 200) {
-      // Save user details in localStorage
       localStorage.setItem("user", JSON.stringify(response.data));
-
-      // Redirect based on user role
       const userRole = response.data.role;
       if (userRole === "MANAGER") {
         router.push("/admin");
