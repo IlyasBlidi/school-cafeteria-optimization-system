@@ -1,62 +1,37 @@
-"use client";
+'use client'
+import { useState } from "react";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useState } from "react";
-import { Category, menuCategories } from "./utils/menuCategories";
-import { AppSidebar } from "@/components/ui/appSidebar/appSidebar";
 import { Separator } from "@/components/ui/separator";
+import { OrderedDish } from "@/components/ui/dishCard"; // Define Dish type in DishCard or utils.
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { AppSidebar } from "@/components/ui/appSidebar/appSidebar";
+import { menuCategories } from "./utils/menuCategories";
 import DishCard from "@/components/ui/dishCard";
-
-interface MenuCategoriesProps {
-  categories: Category[];
-  activeCategory: string;
-  onCategoryChange: (id: string) => void;
-}
-
-const MenuCategories: React.FC<MenuCategoriesProps> = ({
-  categories,
-  activeCategory,
-  onCategoryChange,
-}) => {
-  return (
-    <div className="grid grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto px-4">
-      {categories.map((category) => (
-        <button
-          key={category.id}
-          onClick={() => onCategoryChange(category.id)}
-          className={`flex items-center p-4 rounded-lg border transition-all hover:bg-gray-50
-            ${
-              activeCategory === category.id
-                ? "bg-blue-500 border-blue-600 text-white"
-                : "bg-white border-gray-200"
-            }`}
-        >
-          <div className="flex items-center gap-3 w-full">
-            <span className="text-2xl">{category.icon}</span>
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-medium">{category.label}</span>
-              <span
-                className={`text-xs ${
-                  activeCategory === category.id
-                    ? "text-blue-100"
-                    : "text-gray-500"
-                }`}
-              >
-                {category.count} Menu In Stock
-              </span>
-            </div>
-          </div>
-        </button>
-      ))}
-    </div>
-  );
-};
 
 const MenuPage = () => {
   const [activeCategory, setActiveCategory] = useState("lunch");
+  const [orderedDishes, setOrderedDishes] = useState<OrderedDish[]>([]);
+
+
+  const addToOrder = (dish: OrderedDish) => {
+    setOrderedDishes((prev) => [...prev, dish]);
+  };
+
+  const clearOrder = () => setOrderedDishes([]);
+
+  console.log(orderedDishes)
 
   return (
     <SidebarProvider>
@@ -64,28 +39,92 @@ const MenuPage = () => {
       <SidebarInset>
         <div className="flex flex-col h-full">
           <header className="sticky top-0 z-10 bg-white border-b">
-            <div className="flex items-center h-16 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mx-4 h-4" />
-              <h1 className="text-lg font-semibold">Menu</h1>
+            <div className="flex items-center justify-between h-16 px-4">
+              <div className="flex items-center">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mx-4 h-4" />
+                <h1 className="text-lg font-semibold">Menu</h1>
+              </div>
+              <div className="font-general-sans text-byed font-medium text-lg">
+                <Sheet>
+                  <SheetTrigger className="bg-limouni rounded-lg h-10 px-4">
+                    Checkout
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Your Order</SheetTitle>
+                      <SheetDescription>
+                        Review the dishes you’ve added to your order.
+                      </SheetDescription>
+                    </SheetHeader>
+                    <div className="flex flex-col justify-between h-full py-12">
+                      <div className="mt-4  space-y-4 justify-between ">
+
+                        {orderedDishes.length > 0 ? (
+                          orderedDishes.map((dish, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between border-b pb-2"
+                            >
+                              <div className="flex justify-between gap-2">
+                                <span className="font-medium">{dish.name} </span>
+                                <span className="font-light">* {dish.quantity} </span>
+                              </div>
+                              <span> ${dish.price.toFixed(2)*dish.quantity}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No dishes added to your order yet.</p>
+                        )}
+                      </div>
+                      {orderedDishes.length > 0 && (
+
+                        <div className="mt-4 flex flex-col gap-2 ">
+
+                          <div className="flex justify-between gap-2">
+                            <span className="font-medium">Total : </span>
+                            <span className="font-medium">  ${orderedDishes.reduce((total, dish) => total + dish.price * dish.quantity, 0).toFixed(2)}
+                            </span>
+
+
+                          </div>
+                          <Separator orientation="horizontal" className="mb-2" />
+
+
+
+                          <Button
+                            variant="destructive"
+                            onClick={clearOrder}
+                            className="w-full h-10 "
+                          >
+                            Clear Order
+                          </Button>
+                          <Button
+                            onClick={clearOrder}
+                            className="w-full bg-limouni h-10"
+                          >
+                            Command
+                          </Button>
+                        </div>
+                      )}
+
+                    </div>
+
+                  </SheetContent>
+                </Sheet>
+              </div>
             </div>
             <div className="py-4">
-              <MenuCategories
-                categories={menuCategories}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-              />
             </div>
           </header>
-          
           <main className="flex-1 p-4">
             <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-              <DishCard />
-              <DishCard />
-              <DishCard />
-              <DishCard />
-              <DishCard />
-
+              {Array.from({ length: 5 }).map((_, index) => (
+                <DishCard
+                  key={index}
+                  onAddToOrder={addToOrder}
+                />
+              ))}
             </div>
           </main>
         </div>
