@@ -8,6 +8,13 @@ export interface User {
   role: Role;
 }
 
+interface CardUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string; 
+}
+
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -17,8 +24,7 @@ export interface SignupCredentials {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
-  role: Role
+  password: string
 }
 
 export interface AuthResponse {
@@ -28,4 +34,17 @@ export interface AuthResponse {
   email: string;
   role: Role;
   token: string;
+}
+
+export interface CardBody {
+  cardId: string;
+  balance: number;
+  lastUpdateDate: string;
+}
+
+export interface Card {
+  id: string;
+  balance: number;
+  lastUpdateDate: string;
+  user: CardUser
 }

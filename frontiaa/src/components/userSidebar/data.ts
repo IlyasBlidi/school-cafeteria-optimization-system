@@ -1,3 +1,4 @@
+import { user } from '@/lib/utils';
 import { 
   CreditCard,
   UtensilsCrossed,
@@ -7,17 +8,6 @@ import {
   Home,
   Settings
 } from 'lucide-react';
-
-const getUserData = () => {
-  try {
-    const userData = localStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
-  } catch (error) {
-    console.error('Error parsing user data:', error);
-    return null;
-  }
-};
-const user = getUserData();
 
 const data = {
   user: {

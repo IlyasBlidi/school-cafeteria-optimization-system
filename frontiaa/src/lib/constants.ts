@@ -12,4 +12,10 @@ export const API_ENDPOINTS = {
     ALL: "/users",
     BY_ID: (id: string) => `/users/${id}`,
   },
+
+  CARDS: {
+    ALL: "/cards",
+    BY_USER_ID: (userId: string) => `/cards/${userId}`,
+    CAHRGE: (cardId: string, amount: number) => `/cards/${cardId}`,
+  },
 } as const;
