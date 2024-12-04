@@ -9,6 +9,10 @@ import { DishCard, OrderedDish } from "@/components/ui/dishCard";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { UtensilsCrossed } from "lucide-react";
+import { commandService } from "@/services/commandService";
+
+import {user} from "@/components/userSidebar/data"
+import { Command } from "@/api/types";
 
 // Category Icons mapping
 const categoryIcons: { [key: string]: string } = {
@@ -67,7 +71,7 @@ const MenuCategories: React.FC<MenuCategoriesProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-3 gap-4 w-full max-w-screen-xl mx-auto px-4">
+    <div className="grid lg:grid-cols-4 gap-4 w-full  max-w-screen-xl mx-auto px-4">
       {categories.map((category) => (
         <button
           key={category.id}
@@ -136,6 +140,24 @@ const MenuPage = () => {
     }
   }
 
+  async function handleConfirmOrder  ()  {
+    console.log("Confirming order for user " + user.identifier);
+    const userId : string = user.identifier ;
+    const command: Command = {
+      userId,
+      OrderedDishes: orderedDishes.map(dish => ({
+        articleId: dish.article.id,
+        quantity: dish.quantity,
+      })),
+    };
+    
+    console.log(command)
+    
+    const AddNewCommandResponse = await commandService.addNewCommand(command);
+    console.log("Command added with ID: " + AddNewCommandResponse);
+    
+  }
+
   const handleAddToOrder = (dish: OrderedDish) => {
     setOrderedDishes(prev => {
       const existingDish = prev.find(d => d.article.id === dish.article.id);
@@ -154,12 +176,14 @@ const MenuPage = () => {
     setOrderedDishes([]);
   };
 
+   
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <div className="flex flex-col h-full">
-          <header className="sticky top-0 z-10 bg-white border-b">
+          <header className="sticky top-0 z-10 bg-white border-b ">
             <div className="flex items-center justify-between h-16 px-4">
               <div className="flex items-center">
                 <SidebarTrigger className="-ml-1" />
@@ -214,6 +238,7 @@ const MenuPage = () => {
                           </Button>
                           <Button
                             className="w-full bg-limouni hover:bg-limouni/90"
+                            onClick={handleConfirmOrder}
                           >
                             Confirm Order
                           </Button>
@@ -232,7 +257,7 @@ const MenuPage = () => {
             </div>
           </header>
           
-          <main className="flex-1 p-4">
+          <main className="flex-1 p-4  ">
             <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
               {filteredArticles.map(article => (
                 <DishCard

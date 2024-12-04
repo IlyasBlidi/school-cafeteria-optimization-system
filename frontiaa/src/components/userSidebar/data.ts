@@ -17,7 +17,7 @@ const getUserData = () => {
     return null;
   }
 };
-const user = getUserData();
+export const user = getUserData();
 
 const data = {
   user: {

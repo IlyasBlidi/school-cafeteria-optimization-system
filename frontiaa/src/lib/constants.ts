@@ -12,4 +12,9 @@ export const API_ENDPOINTS = {
     ALL: "/users",
     BY_ID: (id: string) => `/users/${id}`,
   },
+
+  COMMAND: {
+    ALL: "/commands",
+    NEW_BY_USER_ID: (userId: string) => `/commands/${userId}`,
+  },
 } as const;

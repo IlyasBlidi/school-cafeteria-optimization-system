@@ -1,27 +1,7 @@
+import { Dish, OrderItem } from '@/api/types';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// Define the types for our order and dish
-export interface Dish {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  preparationTime: string;
-  calories: number;
-  allergens: string[];
-  available: boolean;
-  category: string;
-  dietaryInfo: string[];
-}
 
-export interface OrderItem {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
-  specialInstructions?: string;
-  isUrgent?: boolean;
-}
 
 interface OrderContextType {
   orderItems: OrderItem[];

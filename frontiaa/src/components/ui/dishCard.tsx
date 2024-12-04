@@ -54,7 +54,7 @@ export const DishCard: React.FC<DishCardProps> = ({ article, onAddToOrder }) => 
   };
 
   return (
-    <Card className="w-72 border hover:shadow-lg transition-shadow duration-200 flex flex-col h-full p-4">
+    <Card className="w-auto border hover:shadow-lg transition-shadow duration-200 flex flex-col h-full p-4">
       <div className="flex justify-between items-start mb-2">
         <CardTitle className="text-xl font-bold">{article.title}</CardTitle>
         <Badge variant="secondary" className="bg-blue-50 text-blue-800">
