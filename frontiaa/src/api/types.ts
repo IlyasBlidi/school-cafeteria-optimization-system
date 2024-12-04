@@ -57,7 +57,8 @@ export enum Status {
   COMPLETED = "COMPLETED",
 }
 export interface OrderedDish {
-  articleId: string;
+  article: Dish;
+  
   quantity: number;
 }
 
@@ -65,7 +66,7 @@ export interface OrderedDish {
 // Define the types for our order and dish
 export interface Dish {
   id: string;
-  name: string;
+  title: string;
   description: string;
   price: number;
   preparationTime: string;
