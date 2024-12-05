@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { cardService } from "@/services/cardService";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,16 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { cardService } from "@/services/cardService"; // Assuming cardService is already implemented
+import { useCard } from "@/Contexts/CardContext";
 
 export function DialogDemo({ cardId }: { cardId?: string }) {
-  if (!cardId) {
-    return <p>No card ID available.</p>; // or handle this case however you like
-  }
-  const [newAmount, setNewAmount] = useState<number>(0.0); // State to track new balance
-  const [error, setError] = useState<string | null>(null); // State for error handling
-  const [isLoading, setIsLoading] = useState<boolean>(false); // Track loading state
+  const { cardData, setCardData } = useCard();
+  const [newAmount, setNewAmount] = useState<number>(0.0);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChargeCard = async () => {
     if (newAmount <= 0) {
@@ -30,15 +29,12 @@ export function DialogDemo({ cardId }: { cardId?: string }) {
 
     setIsLoading(true);
     try {
-      // Make the API call to update the balance
-      await cardService.chargeCard(cardId, newAmount);
+      const updatedCard = await cardService.chargeCard(cardId!, newAmount);
+      setCardData({ ...cardData!, balance: updatedCard.data.balance }); // Update the balance in the context
       setIsLoading(false);
-      // Or handle state update to reflect the new balance in your UI
     } catch (error) {
       setIsLoading(false);
       setError("Failed to update the card balance. Please try again.");
-      console.log(cardId);
-      console.log(newAmount);
       console.error("Error charging card:", error);
     }
   };

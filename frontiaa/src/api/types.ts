@@ -12,7 +12,7 @@ interface CardUser {
   id: string;
   firstName: string;
   lastName: string;
-  email: string; 
+  email: string;
 }
 
 export interface LoginCredentials {
@@ -24,7 +24,7 @@ export interface SignupCredentials {
   firstName: string;
   lastName: string;
   email: string;
-  password: string
+  password: string;
 }
 
 export interface AuthResponse {
@@ -46,5 +46,12 @@ export interface Card {
   id: string;
   balance: number;
   lastUpdateDate: string;
-  user: CardUser
+  user: CardUser;
+}
+
+export interface CardForTable {
+  id: string;
+  balance: number;
+  lastUpdateDate: string;
+  userEmail: string;
 }

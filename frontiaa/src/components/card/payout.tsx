@@ -2,32 +2,30 @@ import Link from "next/link";
 import data from "../adminSidebar/data";
 import { user } from "@/lib/utils";
 import { cardService } from "@/services/cardService";
-import { useEffect, useRef, useState } from "react";
-import { CardBody } from "@/api/types";
+import { useEffect, useState } from "react";
+import { Card, CardBody } from "@/api/types";
 import { DialogDemo } from "../dialogDemo/dialogDemo";
+import { useCard } from "@/Contexts/CardContext";
 
 export default function PayoutSection() {
-  const cardDataRef = useRef<CardBody | null>(null); // Ref to store the fetched card data
-  const [balance, setBalance] = useState<number | null>(null); // State to track balance
-  const [error, setError] = useState<string | null>(null); // State for error handling
+  const { cardData, setCardData } = useCard();
 
-  const getUserCard = async () => {
-    setError(null); // Reset any previous errors
+  const fetchCardData = async () => {
     try {
       const { data: cardResponse } = await cardService.getCardByUserId(
         user.identifier
-      ); // Replace with dynamic identifier
-      cardDataRef.current = cardResponse; // Store response in the ref
-      setBalance(cardResponse.balance); // Update state with balance
-    } catch (error: any) {
+      );
+      setCardData(cardResponse);
+    } catch (error) {
       console.error("Error fetching user card:", error);
-      setError("Failed to fetch card data.");
     }
   };
 
   useEffect(() => {
-    getUserCard(); // Fetch card data on component mount
-  }, [cardDataRef]);
+    if (!cardData) {
+      fetchCardData(); // Fetch card data only if it's not already fetched
+    }
+  }, [cardData]);
 
   return (
     <main className="flex-1 p-4">
@@ -37,13 +35,9 @@ export default function PayoutSection() {
             <div>
               <p className="text-sm opacity-80">Available Balance</p>
               <h2 className="text-3xl font-bold">
-                {cardDataRef.current && cardDataRef.current.balance !== null
-                  ? `${cardDataRef.current.balance.toFixed(2)} DH`
-                  : "Loading..."}
+                {cardData ? `${cardData.balance.toFixed(2)} DH` : "Loading..."}
               </h2>
-              <p className="text-sm mt-1">
-                Card ID: {cardDataRef.current?.cardId}
-              </p>
+              <p className="text-sm mt-1">Card ID: {cardData?.cardId}</p>
             </div>
             <p>Virtual Card</p>
           </div>
@@ -54,7 +48,7 @@ export default function PayoutSection() {
             <div className="flex justify-between text-sm">
               <div>
                 <p className="opacity-70">Last Updated</p>
-                <p>{cardDataRef.current?.lastUpdateDate}</p>
+                <p>{cardData?.lastUpdateDate}</p>
               </div>
               <div>
                 <p className="opacity-70">Class</p>
@@ -91,7 +85,7 @@ export default function PayoutSection() {
               <span className="text-sm">View Menu</span>
             </button>
           </Link>
-          <DialogDemo cardId={cardDataRef.current?.cardId} />
+          <DialogDemo cardId={cardData?.cardId} />
         </div>
 
         <div className="space-y-4">
