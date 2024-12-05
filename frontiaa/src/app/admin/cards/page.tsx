@@ -38,6 +38,10 @@ import { Card, CardForTable } from "@/api/types";
 import { cardService } from "@/services/cardService";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/adminSidebar/appSidebar";
+import Link from "next/link";
+import { DialogDemo } from "@/components/dialogDemo/dialogDemo";
+import { DialogTrigger } from "@/components/ui/dialog";
+import { CardProvider } from "@/Contexts/CardContext";
 
 export type Payment = {
   id: string;
@@ -48,30 +52,8 @@ export type Payment = {
 
 export const columns: ColumnDef<CardForTable>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "balance",
-    header: () => <div className="text-left bg-teal-100">Balance (MAD)</div>,
+    header: () => <div className="text-center bg-teal-100">Balance (MAD)</div>,
     cell: ({ row }) => {
       const balance = parseFloat(row.getValue("balance"));
       const formatted = new Intl.NumberFormat("fr-MA", {
@@ -83,7 +65,7 @@ export const columns: ColumnDef<CardForTable>[] = [
   },
   {
     accessorKey: "lastUpdateDate",
-    header: () => <div className="text-left bg-blue-100">Last update</div>,
+    header: () => <div className="text-center bg-blue-100">Last update</div>,
     cell: ({ row }) => (
       <div className="text-left">
         {new Date(row.getValue("lastUpdateDate")).toLocaleDateString()}
@@ -94,31 +76,20 @@ export const columns: ColumnDef<CardForTable>[] = [
     accessorKey: "userEmail",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
+        <div className="flex items-center text-center justify-center bg-teal-100">
+          <span
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="flex items-center gap-x-1 cursor-pointer select-none"
+          >
+            User email
+            <ArrowUpDown />
+          </span>
+        </div>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("userEmail")}</div>,
-  },
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("userEmail")}</div>
+    ),
   },
   {
     id: "actions",
@@ -126,27 +97,7 @@ export const columns: ColumnDef<CardForTable>[] = [
     cell: ({ row }) => {
       const payment = row.original;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <DialogDemo cardId={row.original.id} />;
     },
   },
 ];
@@ -184,7 +135,7 @@ const Home: React.FC = () => {
 
   React.useEffect(() => {
     fetchAllCards();
-  }, []);
+  }, [cards]);
 
   const table = useReactTable({
     data: cards,
@@ -209,7 +160,7 @@ const Home: React.FC = () => {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="overflow-hidden">
-        <div className="w-full">
+        <div className="w-full px-4">
           <div className="flex items-center py-4">
             <Input
               placeholder="Filter emails..."
@@ -249,54 +200,59 @@ const Home: React.FC = () => {
             </DropdownMenu>
           </div>
           <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
+            <CardProvider>
+              <Table>
+                <TableHeader className="bg-red-100">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead
+                            key={header.id}
+                            className="w-1/4 bg-slate-100"
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        );
+                      })}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardProvider>
           </div>
           <div className="flex items-center justify-end space-x-2 py-4">
             <div className="flex-1 text-sm text-muted-foreground">
