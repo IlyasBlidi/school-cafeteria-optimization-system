@@ -6,7 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { OrderStatus, OrderItem } from "@/types/order";
+import {  OrderItem } from "@/types/order";
+import { OrderedDish, Status } from "@/api/types";
 
 interface NewOrderProps {
   orderNumber: string;
@@ -14,30 +15,30 @@ interface NewOrderProps {
   studentClass: string;
   total: number;
   timeElapsed: string;
-  status: OrderStatus;
-  onStatusChange: (newStatus: OrderStatus) => void;
+  status: Status;
+  onStatusChange: (newStatus: Status) => void;
   onRemove: () => void;
-  items?: OrderItem[];
+  items?: OrderedDish[];
 }
 
 const statusConfig = {
-  new: {
-    label: "New",
+  NEW: {
+    label: "NEW",
     className: "bg-gray-100 text-gray-700",
     dotClassName: "bg-gray-500"
   },
-  cooking: {
-    label: "Cooking",
+  COOKING: {
+    label: "COOKING",
     className: "bg-emerald-100 text-emerald-700",
     dotClassName: "bg-emerald-500"
   },
-  ready: {
-    label: "Ready",
+  READY: {
+    label: "READY",
     className: "bg-orange-100 text-orange-700",
     dotClassName: "bg-orange-500"
   },
-  completed: {
-    label: "Completed",
+  COMPLETED: {
+    label: "COMPLETED",
     className: "bg-blue-100 text-blue-700",
     dotClassName: "bg-blue-500"
   }
@@ -46,9 +47,9 @@ const statusConfig = {
 const NewOrder = ({
   orderNumber,
   studentName,
-  studentClass,
   total,
   timeElapsed,
+  studentClass,
   status,
   onStatusChange,
   onRemove,
@@ -75,16 +76,16 @@ const NewOrder = ({
               <MoreVertical className="h-5 w-5 text-gray-400 hover:text-gray-600" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onStatusChange("new")}>
+              <DropdownMenuItem onClick={() => onStatusChange(Status.NEW)}>
                 New
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onStatusChange("cooking")}>
+              <DropdownMenuItem onClick={() => onStatusChange(Status.COOKING)}>
                 Cooking
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onStatusChange("ready")}>
+              <DropdownMenuItem onClick={() => onStatusChange(Status.READY)}>
                 Ready
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onStatusChange("completed")}>
+              <DropdownMenuItem onClick={() => onStatusChange(Status.COMPLETED)}>
                 Completed
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onRemove} className="text-red-600">
@@ -110,9 +111,9 @@ const NewOrder = ({
           <div key={index} className="flex justify-between text-sm">
             <div className="flex gap-2">
               <span>{item.quantity}x</span>
-              <span>{item.name}</span>
+              <span>{item.article.title}</span>
             </div>
-            <div>${item.price.toFixed(2)}</div>
+            <div>${item.article.price}</div>
           </div>
         ))}
       </div>

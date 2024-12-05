@@ -1,7 +1,11 @@
+'use client'
 import Link from "next/link";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+
 
 const Home: FC = () => {
+
+
   return (
     <>
       <main className="font-general-sans min-h-screen h-[500px] min-w-[800px] flex flex-col items-center justify-between">

@@ -1,3 +1,5 @@
+import { OrderedDish } from "@/api/types";
+
 export type OrderStatus = "new" | "cooking" | "ready" | "completed";
 
 export interface OrderItem {
@@ -13,5 +15,5 @@ export interface Order {
   total: number;
   timeElapsed: string;
   status: OrderStatus;
-  items: OrderItem[];
+  items: OrderedDish[];
 }
