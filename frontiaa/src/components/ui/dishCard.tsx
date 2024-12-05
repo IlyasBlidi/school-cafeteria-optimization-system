@@ -20,8 +20,8 @@ export const DishCard: React.FC<DishCardProps> = ({ article, onAddToOrder }) => 
 
   const handleAddToOrder = () => {
     onAddToOrder({ article, quantity });
-    toast({
-      title: `${article.title} added to order`,
+    toast(article.title, {
+      title: `added to order`,
       description: `Quantity: ${quantity}`,
     });
   };
@@ -31,7 +31,7 @@ export const DishCard: React.FC<DishCardProps> = ({ article, onAddToOrder }) => 
       <div className="flex justify-between items-start gap-2 mb-2">
         <div className="flex-1">
           <CardTitle className="text-lg mb-1">{article.title}</CardTitle>
-          <Badge variant="secondary" className="bg-blue-50 text-blue-800 text-xs">
+          <Badge variant="secondary" className="bg-orange-50 text-orange-800 text-xs">
             {article.category.name}
           </Badge>
         </div>
@@ -40,7 +40,7 @@ export const DishCard: React.FC<DishCardProps> = ({ article, onAddToOrder }) => 
         {article.description}
       </CardDescription>
       <div className="flex justify-between items-center mb-3">
-        <span className="text-xl text-blue-600">
+        <span className="text-xl font-medium text-limouni">
           {article.price.toFixed(2)}dh
         </span>
         <div className="flex items-center gap-1 text-gray-600">
@@ -94,7 +94,7 @@ export const DishCard: React.FC<DishCardProps> = ({ article, onAddToOrder }) => 
             </Button>
           </div>
           <Button 
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+            className="flex-1 bg-limouni hover:bg-gray-800 text-white transition-colors"
             onClick={handleAddToOrder}
           >
             Add to Order

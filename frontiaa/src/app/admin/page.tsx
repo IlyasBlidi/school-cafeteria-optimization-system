@@ -6,9 +6,10 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import NewOrder from "@/components/ui/newOrder";
-import { Order, OrderStatus } from "@/types/order";
 import { AppSidebar } from "@/components/adminSidebar/appSidebar";
 import { Separator } from "@radix-ui/react-separator";
+import { NotificationProvider } from "@/Contexts/NotificationContext";
+import { Order, OrderStatus } from "@/types/types";
 
 const Home: FC = () => {
   // @Marouane : list ghyr bach ntesti
@@ -101,44 +102,48 @@ const Home: FC = () => {
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <div className="flex-1 h-full w-full overflow-hidden font-general-sans">
-          <header className="sticky top-0 z-10 bg-white border-b">
-            <div className="flex items-center h-16 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mx-4 h-4" />
-              <h1 className="text-[17px] font-general-sans font-medium">Welcome Back Admin,</h1>
-            </div>
-          </header>
-          <div className="h-full flex flex-col p-6 gap-[4rem]">
-            <div className="flex-1 overflow-auto">
-              <div className="grid grid-cols-4 gap-6">
-                {(["new", "cooking", "ready", "completed"] as const).map(
-                  (status) => (
-                    <div key={status} className="space-y-4">
-                      <h2 className="text-lg font-medium text-gray-600">
-                        {status.charAt(0).toUpperCase() + status.slice(1)} (
-                        {ordersByStatus[status].length})
-                      </h2>
-                      {ordersByStatus[status].map((order) => (
-                        <NewOrder
-                          key={order.orderNumber}
-                          {...order}
-                          onStatusChange={(newStatus) =>
-                            handleStatusChange(order.orderNumber, newStatus)
-                          }
-                          onRemove={() => handleRemove(order.orderNumber)}
-                        />
-                      ))}
-                    </div>
-                  )
-                )}
+      <NotificationProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <div className="flex-1 h-full w-full overflow-hidden font-general-sans">
+            <header className="sticky top-0 z-10 bg-white border-b">
+              <div className="flex items-center h-16 px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mx-4 h-4" />
+                <h1 className="text-[17px] font-general-sans font-medium">
+                  Welcome Back Admin,
+                </h1>
+              </div>
+            </header>
+            <div className="h-full flex flex-col p-6 gap-[4rem]">
+              <div className="flex-1 overflow-auto">
+                <div className="grid grid-cols-4 gap-6">
+                  {(["new", "cooking", "ready", "completed"] as const).map(
+                    (status) => (
+                      <div key={status} className="space-y-4">
+                        <h2 className="text-lg font-medium text-gray-600">
+                          {status.charAt(0).toUpperCase() + status.slice(1)} (
+                          {ordersByStatus[status].length})
+                        </h2>
+                        {ordersByStatus[status].map((order) => (
+                          <NewOrder
+                            key={order.orderNumber}
+                            {...order}
+                            onStatusChange={(newStatus) =>
+                              handleStatusChange(order.orderNumber, newStatus)
+                            }
+                            onRemove={() => handleRemove(order.orderNumber)}
+                          />
+                        ))}
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </SidebarInset>
+        </SidebarInset>
+      </NotificationProvider>
     </SidebarProvider>
   );
 };

@@ -11,7 +11,7 @@ const config: Config = {
   	extend: {
   		colors: {
   			zrek: '#fa541c',
-  			limouni: '#0048FF',
+  			limouni: '#4A665E',
   			byed: '#F6F4EE',
   			faragh: '#000',
   			sidebar: {
