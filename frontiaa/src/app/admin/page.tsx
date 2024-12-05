@@ -10,6 +10,7 @@ import { AppSidebar } from "@/components/adminSidebar/appSidebar";
 import { Separator } from "@radix-ui/react-separator";
 import { CommandRecieved, Status } from "@/api/types";
 import { Client, IMessage } from '@stomp/stompjs';
+import SockJS from "sockjs-client";
 
 interface UseWebSocketProps {
   onNewCommand?: (command: CommandRecieved) => void;
@@ -20,7 +21,7 @@ export const useWebSocket = ({ onNewCommand }: UseWebSocketProps) => {
 
   useEffect(() => {
     const stompClient = new Client({
-      brokerURL:  'ws://localhost:8080/ws', 
+      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
       reconnectDelay: 2000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
