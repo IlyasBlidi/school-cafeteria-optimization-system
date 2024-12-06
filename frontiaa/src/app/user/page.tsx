@@ -154,7 +154,7 @@ const MenuPage = () => {
     console.log(command)
     
     const AddNewCommandResponse = await commandService.addNewCommand(command);
-    console.log("Command added with ID: " + AddNewCommandResponse);
+    console.log("Command added with ID: " + AddNewCommandResponse.data.status);
     
   }
 

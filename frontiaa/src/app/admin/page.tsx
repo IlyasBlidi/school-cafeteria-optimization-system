@@ -11,57 +11,10 @@ import { Separator } from "@radix-ui/react-separator";
 import { CommandRecieved, Status } from "@/api/types";
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from "sockjs-client";
+import { commandService } from "@/services/commandService";
+import { useWebSocket } from "@/hooks/useSocketHook";
 
-interface UseWebSocketProps {
-  onNewCommand?: (command: CommandRecieved) => void;
-}
 
-export const useWebSocket = ({ onNewCommand }: UseWebSocketProps) => {
-  const [client, setClient] = useState<Client | null>(null);
-
-  useEffect(() => {
-    const stompClient = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
-      reconnectDelay: 2000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      debug: (msg) => console.log('[WebSocket Debug]', msg),
-      onWebSocketError: (error) => {
-        console.error('WebSocket Error:', error);
-      },
-      onDisconnect: (frame) => {
-        console.log('WebSocket Disconnected:', frame);
-      }
-    });
-
-    stompClient.onConnect = () => {
-      console.log('WebSocket Connected');
-      stompClient.subscribe('/topic/NewCommands', (message: IMessage) => {
-        try {
-          console.log('Received WebSocket message:', message.body);
-          const newCommand: CommandRecieved = JSON.parse(message.body);
-          onNewCommand?.(newCommand);
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      });
-    };
-
-    stompClient.onStompError = (frame) => {
-      console.error('Broker reported error:', frame.headers['message']);
-      console.error('Additional details:', frame.body);
-    };
-
-    stompClient.activate();
-    setClient(stompClient);
-
-    return () => {
-      stompClient.deactivate();
-    };
-  }, [onNewCommand]);
-
-  return { client };
-};
 
 const Home: FC = () => {
   const [orders, setOrders] = useState<CommandRecieved[]>([]);
@@ -69,8 +22,8 @@ const Home: FC = () => {
   const [error, setError] = useState<string | null>(null);
 
  
-  // Memoize the onNewCommand callback to avoid unnecessary re-renders
-  const onNewCommand = useCallback((newCommand: CommandRecieved) => {
+  // Memoize the onCommand callback to avoid unnecessary re-renders
+  const onCommand = useCallback((newCommand: CommandRecieved) => {
     setOrders((prevOrders) => {
       // Check if the command already exists
       const exists = prevOrders.some((order) => order.id === newCommand.id);
@@ -101,21 +54,25 @@ const Home: FC = () => {
     };
 
     fetchOrders();
-  }, []); // Empty dependency array ensures this effect runs only once
+  }, []);
 
   // Initialize WebSocket for real-time updates
   useWebSocket({
-    onNewCommand,
+    onCommand,
   });
 
   // Function to handle status change
-  const handleStatusChange = (orderId: string, newStatus: Status) => {
+  const handleStatusChange = async (orderId: string, newStatus: Status) => {
+   
+   await commandService.setCommandStatus(orderId, newStatus);
     console.log(`Changing status of order ${orderId} to ${newStatus}`);
+    
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
         order.id === orderId ? { ...order, status: newStatus } : order
       )
     );
+
   };
 
   // Function to handle order removal
