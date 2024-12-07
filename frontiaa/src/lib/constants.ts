@@ -1,6 +1,4 @@
-// src/lib/constants.ts
-
-import { Status } from "@/api/types";
+import { Status } from "@/types/types";
 
 export const API_BASE_URL = "http://localhost:8080/api/v1";
 

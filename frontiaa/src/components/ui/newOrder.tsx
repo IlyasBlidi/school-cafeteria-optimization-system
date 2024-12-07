@@ -6,42 +6,30 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {  OrderItem } from "@/types/order";
-import { OrderedDish, Status } from "@/api/types";
+import { NewOrderProps, Status } from "@/types/types";
 
-interface NewOrderProps {
-  orderNumber: string;
-  studentName: string;
-  studentClass: string;
-  total: number;
-  timeElapsed: string;
-  status: Status;
-  onStatusChange: (newStatus: Status) => void;
-  onRemove: () => void;
-  items?: OrderedDish[];
-}
 
 const statusConfig = {
   NEW: {
     label: "NEW",
     className: "bg-gray-100 text-gray-700",
-    dotClassName: "bg-gray-500"
+    dotClassName: "bg-gray-500",
   },
   COOKING: {
     label: "COOKING",
     className: "bg-emerald-100 text-emerald-700",
-    dotClassName: "bg-emerald-500"
+    dotClassName: "bg-emerald-500",
   },
   READY: {
     label: "READY",
     className: "bg-orange-100 text-orange-700",
-    dotClassName: "bg-orange-500"
+    dotClassName: "bg-orange-500",
   },
   COMPLETED: {
     label: "COMPLETED",
     className: "bg-blue-100 text-blue-700",
-    dotClassName: "bg-blue-500"
-  }
+    dotClassName: "bg-blue-500",
+  },
 };
 
 const NewOrder = ({
@@ -53,9 +41,11 @@ const NewOrder = ({
   status,
   onStatusChange,
   onRemove,
-  items = []
+  items = [],
 }: NewOrderProps) => {
-  const currentStatus = statusConfig[status];
+
+  
+  const currentStatus = statusConfig[status as keyof typeof statusConfig]
 
   return (
     <div className="rounded-lg p-4 space-y-4 border shadow">
@@ -85,7 +75,9 @@ const NewOrder = ({
               <DropdownMenuItem onClick={() => onStatusChange(Status.READY)}>
                 Ready
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onStatusChange(Status.COMPLETED)}>
+              <DropdownMenuItem
+                onClick={() => onStatusChange(Status.COMPLETED)}
+              >
                 Completed
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onRemove} className="text-red-600">
@@ -97,11 +89,15 @@ const NewOrder = ({
       </div>
 
       <div className="space-y-2">
-        <div className={cn(
-          "inline-flex items-center px-2 py-1 rounded-full text-sm gap-2",
-          currentStatus.className
-        )}>
-          <div className={cn("w-2 h-2 rounded-full", currentStatus.dotClassName)} />
+        <div
+          className={cn(
+            "inline-flex items-center px-2 py-1 rounded-full text-sm gap-2",
+            currentStatus.className
+          )}
+        >
+          <div
+            className={cn("w-2 h-2 rounded-full", currentStatus.dotClassName)}
+          />
           {currentStatus.label}
         </div>
       </div>

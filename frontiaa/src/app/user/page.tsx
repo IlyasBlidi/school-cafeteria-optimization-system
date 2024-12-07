@@ -1,52 +1,36 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { AppSidebar } from "@/components/userSidebar/appSidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Separator } from "@radix-ui/react-separator";
-import { DishCard, OrderedDish } from "@/components/ui/dishCard";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { DishCard } from "@/components/ui/dishCard";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ShoppingCart, UtensilsCrossed, X } from "lucide-react";
+import { categoryIcons, user } from "@/lib/utils";
+import {
+  MenuCategoriesProps,
+  Category,
+  Article,
+  OrderedDish,
+  CommandSent,
+} from "@/types/types";
+import { NotificationCenter } from "@/components/ui/notification";
+import { NotificationProvider } from "@/Contexts/NotificationContext";
 import { Button } from "@/components/ui/button";
-import { UtensilsCrossed } from "lucide-react";
 import { commandService } from "@/services/commandService";
-
-import {user} from "@/components/userSidebar/data"
-import { Command } from "@/api/types";
-
-// Category Icons mapping
-const categoryIcons: { [key: string]: string } = {
-  "Breakfast": "🍳",
-  "Lunch": "🍱",
-  "Dinner": "🍽️",
-  "Soup": "🥣",
-  "Desserts": "🍨",
-  "Side Dishes": "🥗",
-  "Appetizer": "🥟",
-  "Beverages": "☕",
-  "Snacks": "🥨",
-  "VIP Menu": "👑"
-};
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-}
-
-interface Article {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  category: Category;
-}
-
-interface MenuCategoriesProps {
-  activeCategory: string;
-  onCategoryChange: (id: string) => void;
-}
-
 
 const MenuCategories: React.FC<MenuCategoriesProps> = ({
   activeCategory,
@@ -64,54 +48,59 @@ const MenuCategories: React.FC<MenuCategoriesProps> = ({
         "http://localhost:8080/api/v1/categories/"
       );
       setCategories(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   }
 
   return (
-    <div className="grid lg:grid-cols-4 gap-4 w-full  max-w-screen-xl mx-auto px-4">
-      {categories.map((category) => (
-        <button
-          key={category.id}
-          onClick={() => onCategoryChange(category.id)}
-          className={`flex items-center p-4 rounded-lg border transition-all
-            ${
-              activeCategory === category.id
-                ? "bg-blue-500 border-blue-600 text-white"
-                : "bg-white border-gray-200"
-            }`}
-        >
-          <div className="flex items-center gap-3 w-full">
-            <span
-              className={`${
-                activeCategory === category.id ? "text-white" : "text-gray-500"
+    <div className="font-general-sans w-full max-w-screen-xl mx-auto px-4 sm:px-7">
+      <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => onCategoryChange(category.id)}
+            className={`flex p-2 sm:p-4 rounded-lg border transition-all hover:shadow-md
+              ${
+                activeCategory === category.id
+                  ? "bg-blue-500 border-blue-600 text-white"
+                  : "bg-white border-gray-200 hover:border-blue-200"
               }`}
-            >
-              {categoryIcons[category.name] || (
-                <UtensilsCrossed className="w-6 h-6" />
-              )}
-            </span>
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-medium">{category.name}</span>
-              <span
-                className={`text-xs text-start ${
-                  activeCategory === category.id
-                    ? "text-blue-100"
-                    : "text-gray-500"
-                }`}
-              >
-                {category.description}
-              </span>
+          >
+            <div className="flex gap-3 w-full items-center">
+              <div className="flex items-center justify-center w-full sm:w-auto">
+                <span
+                  className={`inline-flex ${
+                    activeCategory === category.id
+                      ? "text-white"
+                      : "text-blue-500"
+                  }`}
+                >
+                  {categoryIcons[category.name] || (
+                    <UtensilsCrossed className="w-5 h-5" />
+                  )}
+                </span>
+              </div>
+
+              <div className="hidden sm:flex flex-col items-start">
+                <span className="text-sm font-medium">{category.name}</span>
+                <span
+                  className={`text-xs mt-0.5 text-start ${
+                    activeCategory === category.id
+                      ? "text-blue-100"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {category.description}
+                </span>
+              </div>
             </div>
-          </div>
-        </button>
-      ))}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
-
 
 const MenuPage = () => {
   const [activeCategory, setActiveCategory] = useState("lunch");
@@ -125,7 +114,9 @@ const MenuPage = () => {
 
   useEffect(() => {
     if (articles.length > 0) {
-      const filtered = articles.filter(article => article.category.id === activeCategory);
+      const filtered = articles.filter(
+        (article) => article.category.id === activeCategory
+      );
       setFilteredArticles(filtered);
     }
   }, [activeCategory]);
@@ -140,30 +131,27 @@ const MenuPage = () => {
     }
   }
 
-  async function handleConfirmOrder  ()  {
+  async function handleConfirmOrder() {
     console.log("Confirming order for user " + user.identifier);
-    const userId : string = user.identifier ;
-    const command: Command = {
+    const userId: string = user.identifier;
+    const command: CommandSent = {
       userId,
-      OrderedDishes: orderedDishes.map(dish => ({
+      OrderedDishes: orderedDishes.map((dish) => ({
         articleId: dish.article.id,
         quantity: dish.quantity,
       })),
     };
-    
-    console.log(command)
-    
     const AddNewCommandResponse = await commandService.addNewCommand(command);
     console.log("Command added with ID: " + AddNewCommandResponse.data.status);
     clearOrder();
   }
 
   const handleAddToOrder = (dish: OrderedDish) => {
-    setOrderedDishes(prev => {
-      const existingDish = prev.find(d => d.article.id === dish.article.id);
+    setOrderedDishes((prev) => {
+      const existingDish = prev.find((d) => d.article.id === dish.article.id);
       if (existingDish) {
-        return prev.map(d => 
-          d.article.id === dish.article.id 
+        return prev.map((d) =>
+          d.article.id === dish.article.id
             ? { ...d, quantity: d.quantity + dish.quantity }
             : d
         );
@@ -176,100 +164,163 @@ const MenuPage = () => {
     setOrderedDishes([]);
   };
 
-   
+  const handleDeleteOrder = (articleId: string) => {
+    setOrderedDishes((prev) =>
+      prev.filter((dish) => dish.article.id !== articleId)
+    );
+  };
+
+  console.log(orderedDishes);
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <div className="flex flex-col h-full">
-          <header className="sticky top-0 z-10 bg-white border-b ">
-            <div className="flex items-center justify-between h-16 px-4">
-              <div className="flex items-center">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mx-4 h-4" />
-                <h1 className="text-lg font-semibold">Menu</h1>
-              </div>
-              <Sheet>
-                <SheetTrigger className="bg-limouni rounded-lg h-10 px-4 text-white">
-                  Checkout ({orderedDishes.length})
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Your Order</SheetTitle>
-                    <SheetDescription>
-                      Review your order before confirming
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="flex flex-col justify-between h-full py-12">
-                    <div className="mt-4 space-y-4">
-                      {orderedDishes.length > 0 ? (
-                        orderedDishes.map((dish, index) => (
-                          <div key={index} className="flex items-center justify-between border-b pb-2">
-                            <div className="flex justify-between gap-2">
-                              <span className="font-medium">{dish.article.title}</span>
-                              <span className="font-light">× {dish.quantity}</span>
-                            </div>
-                            <span>{(dish.article.price * dish.quantity).toFixed(2)}dh</span>
+      <NotificationProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <div className="font-general-sans flex flex-col h-full">
+            <header className="sticky top-0 z-10 bg-white border-b">
+              <div className="flex items-center justify-between h-16 px-4">
+                <div className="flex items-center">
+                  <SidebarTrigger className="-ml-1" />
+                  <Separator orientation="vertical" className="mx-2 h-4" />
+                  <h1 className="text-lg font-semibold">Menu</h1>
+                </div>
+                <div className="flex items-center gap-4">
+                  <NotificationCenter />
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      >
+                        <ShoppingCart className="h-5 w-5" />
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent className="w-full sm:max-w-md p-0 border-l">
+                      <div className="flex flex-col h-full">
+                        <div className="relative p-6 rounded-b-3xl">
+                          <SheetHeader className="mb-0">
+                            <SheetTitle className="text-2xl font-medium bg-clip-text text-black">
+                              Your Order
+                            </SheetTitle>
+                            <SheetDescription className="text-gray-600">
+                              Review your order before confirming
+                            </SheetDescription>
+                          </SheetHeader>
+                          <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full" />
+                        </div>
+                        <div className="flex-1 overflow-auto px-6">
+                          <div className="py-6 space-y-6">
+                            {orderedDishes.length > 0 ? (
+                              orderedDishes.map((dish, index) => (
+                                <div
+                                  key={index}
+                                  className="group relative bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                      <span className="font-semibold text-gray-900">
+                                        {dish.article.title}
+                                      </span>
+                                      <span className="text-sm text-gray-500">
+                                        Quantity: {dish.quantity}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <span className="font-medium text-blue-600">
+                                        {(
+                                          dish.article.price * dish.quantity
+                                        ).toFixed(2)}
+                                        dh
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteOrder(dish.article.id)
+                                    }
+                                    className="absolute -right-2 -top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-100 text-red-600 rounded-full p-1.5 hover:bg-red-200"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="flex flex-col items-center justify-center py-12 text-center">
+                                <div className="bg-gray-50 rounded-full p-6 mb-4">
+                                  <ShoppingCart className="w-8 h-8 text-gray-400" />
+                                </div>
+                                <p className="text-gray-500">
+                                  Your cart is empty
+                                </p>
+                              </div>
+                            )}
                           </div>
-                        ))
-                      ) : (
-                        <p>Your cart is empty</p>
-                      )}
-                    </div>
-                    {orderedDishes.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        <div className="flex justify-between font-medium">
-                          <span>Total:</span>
-                          <span>
-                            {orderedDishes.reduce((total, dish) => 
-                              total + (dish.article.price * dish.quantity), 0
-                            ).toFixed(2)}dh
-                          </span>
                         </div>
-                        <Separator />
-                        <div className="space-y-2">
-                          <Button
-                            variant="destructive"
-                            onClick={clearOrder}
-                            className="w-full"
-                          >
-                            Clear Order
-                          </Button>
-                          <Button
-                            className="w-full bg-limouni hover:bg-limouni/90"
-                            onClick={handleConfirmOrder}
-                          >
-                            Confirm Order
-                          </Button>
-                        </div>
+                        {orderedDishes.length > 0 && (
+                          <div className="border-t bg-gray-50/80 backdrop-blur-sm p-6 rounded-t-3xl">
+                            <div className="space-y-4">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-600">
+                                  Total Amount
+                                </span>
+                                <span className="text-xl font-medium text-gray-900">
+                                  {orderedDishes
+                                    .reduce(
+                                      (total, dish) =>
+                                        total +
+                                        dish.article.price * dish.quantity,
+                                      0
+                                    )
+                                    .toFixed(2)}
+                                  dh
+                                </span>
+                              </div>
+                              <div className="space-y-2">
+                                <button
+                                  onClick={handleConfirmOrder}
+                                  className="w-full h-12 text-base font-medium bg-green-300 text-green-800 rounded-xl"
+                                >
+                                  Confirm Order
+                                </button>
+                                <button
+                                  onClick={clearOrder}
+                                  className="w-full h-12 text-base font-medium bg-white border-2 border-gray-200 text-gray-600 rounded-xl"
+                                >
+                                  Clear Order
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-            <div className="py-4">
-              <MenuCategories
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-              />
-            </div>
-          </header>
-          
-          <main className="flex-1 p-4  ">
-            <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-              {filteredArticles.map(article => (
-                <DishCard
-                  key={article.id}
-                  article={article}
-                  onAddToOrder={handleAddToOrder}
+                    </SheetContent>
+                  </Sheet>
+                </div>
+              </div>
+            </header>
+
+            <main className="flex-1 p-4">
+              <div className="py-4">
+                <MenuCategories
+                  activeCategory={activeCategory}
+                  onCategoryChange={setActiveCategory}
                 />
-              ))}
-            </div>
-          </main>
-        </div>
-      </SidebarInset>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {filteredArticles.map((article) => (
+                  <DishCard
+                    key={article.id}
+                    article={article}
+                    onAddToOrder={handleAddToOrder}
+                  />
+                ))}
+              </div>
+            </main>
+          </div>
+        </SidebarInset>
+      </NotificationProvider>
     </SidebarProvider>
   );
 };

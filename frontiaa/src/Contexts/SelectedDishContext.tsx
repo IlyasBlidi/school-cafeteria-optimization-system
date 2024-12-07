@@ -1,11 +1,11 @@
-import { Dish, OrderItem } from '@/api/types';
+import { Article, OrderItem } from '@/types/types';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 
 
 interface OrderContextType {
   orderItems: OrderItem[];
-  addToOrder: (dish: Dish, specialInstructions?: string) => void;
+  addToOrder: (dish: Article, specialInstructions?: string) => void;
   removeFromOrder: (dishId: string) => void;
   updateQuantity: (dishId: string, quantity: number) => void;
   clearOrder: () => void;
@@ -16,7 +16,7 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 export const OrderProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
-  const addToOrder = (dish: Dish, specialInstructions?: string) => {
+  const addToOrder = (dish: Article, specialInstructions?: string) => {
     setOrderItems(currentItems => {
       // Check if the dish is already in the order
       const existingItemIndex = currentItems.findIndex(item => item.id === dish.id);
@@ -37,7 +37,7 @@ export const OrderProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         ...currentItems, 
         {
           id: dish.id,
-          name: dish.name,
+          name: dish.title,
           quantity: 1,
           price: dish.price,
           specialInstructions
