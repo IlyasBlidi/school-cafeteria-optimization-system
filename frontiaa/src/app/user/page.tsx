@@ -155,7 +155,7 @@ const MenuPage = () => {
     
     const AddNewCommandResponse = await commandService.addNewCommand(command);
     console.log("Command added with ID: " + AddNewCommandResponse.data.status);
-    
+    clearOrder();
   }
 
   const handleAddToOrder = (dish: OrderedDish) => {
