@@ -1,9 +1,36 @@
 import Link from "next/link";
+import data from "../adminSidebar/data";
+import { user } from "@/lib/utils";
+import { cardService } from "@/services/cardService";
+import { useEffect } from "react";
+import { useCard } from "@/Contexts/CardContext";
+import { DialogDemo } from "../dialogDemo/dialogDemo";
 
 export default function PayoutSection() {
+  // Preserve the card context functionality from HEAD
+  const { cardData, setCardData } = useCard();
+
+  const fetchCardData = async () => {
+    try {
+      const { data: cardResponse } = await cardService.getCardByUserId(
+        user.identifier
+      );
+      setCardData(cardResponse);
+    } catch (error) {
+      console.error("Error fetching user card:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!cardData) {
+      fetchCardData(); // Fetch card data only if it's not already fetched
+    }
+  }, [cardData]);
+
   return (
     <main className="font-general-sans flex-1 p-4">
       <div className="max-w-2xl mx-auto space-y-6">
+        {/* Card Display Section - Using Dev branch styling with HEAD data */}
         <div className="border bg-gray-100 rounded-xl p-5 text-black relative overflow-hidden">
           <div className="flex justify-between items-center mb-8">
             <span className="text-sm text-black/80">Available Balance</span>
@@ -30,19 +57,20 @@ export default function PayoutSection() {
           </div>
 
           <div className="flex flex-row justify-between items-end">
-            <h2 className="text-[60px] font-medium">37.30dh</h2>
+            <h2 className="text-[60px] font-medium">
+              {cardData ? `${cardData.balance.toFixed(2)}dh` : "Loading..."}
+            </h2>
           </div>
 
           <div className="flex flex-col gap-4">
             <p className="font-mono tracking-wider text-lg">
-              Marouane Boufarouj
+              {user.firstName} {user.lastName}
             </p>
-
-            <p className="text-sm text-black/80">Student ID: N15541245</p>
+            <p className="text-sm text-black/80">Card ID: {cardData?.cardId}</p>
             <div className="flex justify-between text-sm">
               <div>
                 <p className="text-black/70 mb-1">Last Updated</p>
-                <p>07/24</p>
+                <p>{cardData?.lastUpdateDate}</p>
               </div>
               <div className="text-right">
                 <p className="text-black/70 mb-1">Class</p>
@@ -52,6 +80,7 @@ export default function PayoutSection() {
           </div>
         </div>
 
+        {/* Menu and Monthly Spent Section */}
         <div className="bg-transparent border rounded-2xl p-6 shadow-sm">
           <div className="flex justify-between">
             <div>
@@ -65,23 +94,25 @@ export default function PayoutSection() {
           </div>
         </div>
 
+        {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-4">
           <Link
             className="p-4 rounded-xl border text-center hover:bg-gray-50"
-            href={"#"}
+            href={
+              data.navMain
+                .find((nav) => nav.title === "Menu")
+                ?.items.find((item) => item.title === "Items")?.url || "#"
+            }
           >
             <button>
               <span className="block mb-1">📋</span>
               <span className="text-sm">View Menu</span>
             </button>
           </Link>
-
-          <button className="p-4 rounded-xl border text-center hover:bg-gray-50">
-            <span className="block mb-1">📊</span>
-            <span className="text-sm">Statistics</span>
-          </button>
+          <DialogDemo cardId={cardData?.cardId} />
         </div>
 
+        {/* Recent Transactions */}
         <div className="space-y-4">
           <h3 className="font-medium">Recent Transactions</h3>
           <div className="space-y-3">

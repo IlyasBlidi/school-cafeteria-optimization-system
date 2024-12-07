@@ -100,17 +100,15 @@ const ActiveOrders = () => {
 
   const onCommand = useCallback((newCommand: CommandRecieved) => {
     setOrders((prevOrders) => {
-
       if (newCommand.status === 'COMPLETED') {
         return prevOrders.filter((order) => order.id !== newCommand.id);
       }
-      // Check if the command already exists
       const exists = prevOrders.some((order) => order.id === newCommand.id);
       return exists
         ? prevOrders.map((order) =>
             order.id === newCommand.id ? newCommand : order
-          ) // Update if exists
-        : [...prevOrders, newCommand]; // Add new if not
+          ) 
+        : [...prevOrders, newCommand]; 
     });
   }, []);
 

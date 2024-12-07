@@ -150,3 +150,31 @@ export interface NewOrderProps {
   onRemove: () => void;
   items?: OrderedDish[];
 }
+
+
+export interface CardUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface CardBody {
+  cardId: string;
+  balance: number;
+  lastUpdateDate: string;
+}
+
+export interface Card {
+  id: string;
+  balance: number;
+  lastUpdateDate: string;
+  user: CardUser;
+}
+
+export interface CardForTable {
+  id: string;
+  balance: number;
+  lastUpdateDate: string;
+  userEmail: string;
+}

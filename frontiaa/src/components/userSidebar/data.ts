@@ -9,7 +9,6 @@ import {
   Settings
 } from 'lucide-react';
 
-
 const data = {
   user: {
     id:user.identifier,
