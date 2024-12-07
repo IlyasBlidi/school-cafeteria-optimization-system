@@ -30,6 +30,7 @@ const getUserData = () => {
     return null;
   }
 };
+
 export const user = getUserData();
 
 export interface NotificationStore {

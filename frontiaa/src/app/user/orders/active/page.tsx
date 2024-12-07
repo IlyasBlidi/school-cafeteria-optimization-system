@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   SidebarInset,
   SidebarProvider,
@@ -10,43 +10,38 @@ import { AppSidebar } from "@/components/userSidebar/appSidebar";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
+import { CommandRecieved, Status } from "@/api/types";
+import { useWebSocket } from "@/hooks/useSocketHook";
+import { commandService } from "@/services/commandService";
+import { user } from "@/components/userSidebar/data";
 
-interface OrderItem {
-  id: string;
-  name: string;
-  quantity: number;
-  specialInstructions?: string;
-  price: number;
-  isUrgent?: boolean;
-}
-
-interface Order {
-  id: string;
-  tableNumber: string;
-  items: OrderItem[];
-  timestamp: string;
-  status: "New" | "Preparing" | "Ready";
-  total: number;
-}
-
-const OrderRow = ({ order }: { order: Order }) => {
+const OrderRow = ({ order }: { order: CommandRecieved }) => {
   return (
     <div className="py-4 border-b border-gray-100">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <span className="font-medium text-gray-900">Table {order.tableNumber}</span>
-          <Badge className="bg-blue-500 text-white font-normal">{order.status}</Badge>
+          <span className="font-medium text-gray-900">Table {order.tableNumber || 'N/A'}</span>
+          <Badge 
+            className={`
+              ${order.status === 'READY' ? 'bg-green-500' : 
+                order.status === 'COOKING' ? 'bg-yellow-500' : 
+                order.status === 'NEW' ? 'bg-blue-500' : 'bg-gray-500'} 
+              text-white font-normal
+            `}
+          >
+            {order.status}
+          </Badge>
         </div>
-        <span className="text-sm text-gray-500">{order.timestamp}</span>
+        <span className="text-sm text-gray-500">{order.commandDate}</span>
       </div>
       
       <div className="space-y-2">
-        {order.items.map((item) => (
-          <div key={item.id} className="flex items-start justify-between">
+        {order.commandArticles.map((item) => (
+          <div key={item.article.id} className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-gray-900">
-                  {item.quantity}x {item.name}
+                  {item.quantity}x {item.article.title}
                 </span>
                 {item.isUrgent && (
                   <AlertCircle className="w-4 h-4 text-red-500" />
@@ -58,45 +53,96 @@ const OrderRow = ({ order }: { order: Order }) => {
                 </div>
               )}
             </div>
-            <span className="text-gray-900">${item.price.toFixed(2)}</span>
+            <span className="text-gray-900">${item.article.price.toFixed(2)}</span>
           </div>
         ))}
       </div>
       
       <div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-100">
         <span className="font-medium text-gray-900">Total</span>
-        <span className="font-medium text-gray-900">${order.total.toFixed(2)}</span>
+        <span className="font-medium text-gray-900">${order.totalPrice.toFixed(2)}</span>
       </div>
     </div>
   );
 };
 
 const ActiveOrders = () => {
-  const [orders] = useState<Order[]>([
-    {
-      id: "1",
-      tableNumber: "12",
-      status: "New",
-      timestamp: "12:30 PM",
-      items: [
-        {
-          id: "1",
-          name: "Spaghetti Carbonara",
-          quantity: 2,
-          price: 8.99,
-          specialInstructions: "Extra cheese",
-          isUrgent: true,
-        },
-        {
-          id: "2",
-          name: "Garlic Bread",
-          quantity: 1,
-          price: 3.99,
-        },
-      ],
-      total: 21.97,
-    },
-  ]);
+  const [orders, setOrders] = useState<CommandRecieved[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch orders from the API
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        // Use Axios response structure 
+        const response = await commandService.getActiveCommandsByUserId(user.identifier);
+        
+        const data: CommandRecieved[] = response.data.filter(
+          (order: CommandRecieved) => order.status !== 'COMPLETED'
+        );
+        
+        // Debug logging
+        console.log('Fetched Orders:', data);
+        
+        setOrders(data);
+      } catch (err) {
+        console.error('Error fetching orders:', err);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchOrders();
+  }, []);
+
+  const onCommand = useCallback((newCommand: CommandRecieved) => {
+    setOrders((prevOrders) => {
+
+      if (newCommand.status === 'COMPLETED') {
+        return prevOrders.filter((order) => order.id !== newCommand.id);
+      }
+      // Check if the command already exists
+      const exists = prevOrders.some((order) => order.id === newCommand.id);
+      return exists
+        ? prevOrders.map((order) =>
+            order.id === newCommand.id ? newCommand : order
+          ) // Update if exists
+        : [...prevOrders, newCommand]; // Add new if not
+    });
+  }, []);
+
+  // Initialize WebSocket for real-time updates
+  useWebSocket({
+    onCommand,
+  }); 
+
+  // Add error and loading states
+  if (loading) {
+    return (
+      <div className="p-4 text-gray-500 flex justify-center items-center h-screen">
+        Loading orders...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-red-500 flex justify-center items-center h-screen">
+        Error: {error}
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="p-4 text-gray-500 flex justify-center items-center h-screen">
+        No active orders
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -111,8 +157,8 @@ const ActiveOrders = () => {
             </div>
           </header>
 
-          <main className="flex-1">
-            <div className="max-w-4xl mx-auto px-4">
+          <main className="flex-1 overflow-y-auto">
+            <div className="max-w-4xl mx-auto px-4 py-4 gap-6 flex flex-col">
               {orders.map((order) => (
                 <OrderRow key={order.id} order={order} />
               ))}

@@ -19,8 +19,8 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
     const newNotification: Notification = {
       ...notification,
-      id: Math.random().toString(36).substr(2, 9),
-      timestamp: new Date().toISOString(),
+      id: Math.random(),
+      timeAgo: new Date().toISOString(),
       isRead: false,
     };
 
@@ -30,7 +30,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const markAsRead = useCallback((id: string) => {
     setNotifications(prev =>
       prev.map(notification =>
-        notification.id === id ? { ...notification, isRead: true } : notification
+        notification.id === Number.parseInt(id) ? { ...notification, isRead: true } : notification
       )
     );
   }, []);
@@ -42,7 +42,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const removeNotification = useCallback((id: string) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
+    setNotifications(prev => prev.filter(notification => notification.id === Number.parseInt(id)));
   }, []);
 
   const clearNotifications = useCallback(() => {

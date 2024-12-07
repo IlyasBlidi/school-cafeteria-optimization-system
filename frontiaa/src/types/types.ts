@@ -1,3 +1,5 @@
+import { Role } from "@/api/enums";
+
 export interface Category {
   id: string;
   name: string;
@@ -20,6 +22,7 @@ export interface Article {
   available?: boolean;
   dietaryInfo?: string[];
 }
+
 
 export interface OrderedDish {
   article: Article;
@@ -49,7 +52,6 @@ export interface Order {
   items: OrderItem[];
 }
 
-
 export interface Notification {
   id: number;
   type: string;
@@ -61,4 +63,90 @@ export interface Notification {
   metadata: Record<string, any>;
   actions: string[];
   target?: string;
+}
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: Role;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface SignupCredentials {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: Role;
+}
+
+export interface AuthResponse {
+  identifier: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: Role;
+  token: string;
+}
+
+export interface CommandSent {
+  userId: string;
+  OrderedDishes: OrderedDishDTO[];
+}
+
+export interface CommandRecieved {
+  id: string; 
+  totalPrice: number;
+  commandDate: string; 
+  status: Status; 
+  commandArticles: OrderedDish[];
+  user: User;
+}
+
+export enum Status {
+  NEW = "NEW",
+  ACCEPTED = "ACCEPTED",
+  DECLINED = "DECLINED",
+  COOKING = "COOKING",
+  READY = "READY",
+  COMPLETED = "COMPLETED",
+}
+
+export interface OrderedDish {
+  article: Article;
+  quantity: number;
+}
+
+export interface OrderedDishDTO {
+  articleId: String;
+  quantity: number;
+}
+
+
+export interface OrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  specialInstructions?: string;
+  isUrgent?: boolean;
+}
+
+
+export interface NewOrderProps {
+  orderNumber: string;
+  studentName: string;
+  studentClass: string;
+  total: number;
+  timeElapsed: string;
+  status: Status;
+  onStatusChange: (newStatus: Status) => void;
+  onRemove: () => void;
+  items?: OrderedDish[];
 }

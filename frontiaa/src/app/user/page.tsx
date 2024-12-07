@@ -19,16 +19,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ShoppingCart, UtensilsCrossed, X } from "lucide-react";
-import { categoryIcons } from "@/lib/utils";
+import { categoryIcons, user } from "@/lib/utils";
 import {
   MenuCategoriesProps,
   Category,
   Article,
   OrderedDish,
+  CommandSent,
 } from "@/types/types";
 import { NotificationCenter } from "@/components/ui/notification";
 import { NotificationProvider } from "@/Contexts/NotificationContext";
 import { Button } from "@/components/ui/button";
+import { commandService } from "@/services/commandService";
 
 const MenuCategories: React.FC<MenuCategoriesProps> = ({
   activeCategory,
@@ -129,6 +131,21 @@ const MenuPage = () => {
     }
   }
 
+  async function handleConfirmOrder() {
+    console.log("Confirming order for user " + user.identifier);
+    const userId: string = user.identifier;
+    const command: CommandSent = {
+      userId,
+      OrderedDishes: orderedDishes.map((dish) => ({
+        articleId: dish.article.id,
+        quantity: dish.quantity,
+      })),
+    };
+    const AddNewCommandResponse = await commandService.addNewCommand(command);
+    console.log("Command added with ID: " + AddNewCommandResponse.data.status);
+    clearOrder();
+  }
+
   const handleAddToOrder = (dish: OrderedDish) => {
     setOrderedDishes((prev) => {
       const existingDish = prev.find((d) => d.article.id === dish.article.id);
@@ -154,7 +171,6 @@ const MenuPage = () => {
   };
 
   console.log(orderedDishes);
-
 
   return (
     <SidebarProvider>
@@ -262,7 +278,10 @@ const MenuPage = () => {
                                 </span>
                               </div>
                               <div className="space-y-2">
-                                <button className="w-full h-12 text-base font-medium bg-green-300 text-green-800 rounded-xl">
+                                <button
+                                  onClick={handleConfirmOrder}
+                                  className="w-full h-12 text-base font-medium bg-green-300 text-green-800 rounded-xl"
+                                >
                                   Confirm Order
                                 </button>
                                 <button

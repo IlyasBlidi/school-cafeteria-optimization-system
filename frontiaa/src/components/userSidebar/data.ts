@@ -12,6 +12,7 @@ import {
 
 const data = {
   user: {
+    id:user.identifier,
     name: user.firstName,
     email: user.email,
     avatar: "/avatars/frew.jpg",
