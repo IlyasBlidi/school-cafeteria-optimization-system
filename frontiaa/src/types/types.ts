@@ -48,3 +48,17 @@ export interface Order {
   status: OrderStatus;
   items: OrderItem[];
 }
+
+
+export interface Notification {
+  id: number;
+  type: string;
+  title: string;
+  message: string;
+  userName: string;
+  timeAgo: string;
+  isRead: boolean;
+  metadata: Record<string, any>;
+  actions: string[];
+  target?: string;
+}
