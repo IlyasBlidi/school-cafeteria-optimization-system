@@ -153,6 +153,9 @@ const MenuPage = () => {
     );
   };
 
+  console.log(orderedDishes);
+
+
   return (
     <SidebarProvider>
       <NotificationProvider>

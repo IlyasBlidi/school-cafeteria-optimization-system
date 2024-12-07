@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect } from "react";
 import { Bell } from "lucide-react";
 import SockJS from "sockjs-client";
@@ -11,24 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Notification } from "@/types/types";
-import { user } from "@/lib/utils";
-import { create } from "zustand";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useNotificationStore, user } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
-interface NotificationStore {
-  notifications: Notification[];
-  addNotification: (notification: Notification) => void;
-  setNotifications: (notifications: Notification[]) => void;
-}
-
-const useNotificationStore = create<NotificationStore>((set) => ({
-  notifications: [],
-  addNotification: (notification) =>
-    set((state) => ({
-      notifications: [notification, ...state.notifications],
-    })),
-  setNotifications: (notifications) => set({ notifications }),
-}));
 
 function WebSocketConnection() {
   const { addNotification, setNotifications } = useNotificationStore();
@@ -37,7 +21,10 @@ function WebSocketConnection() {
 
   useEffect(() => {
     const token = user.token;
-    if (!token) return;
+    if (!token){
+      console.error("Token undefined!")
+      return;
+    }
 
     const client = new Client({
       webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
