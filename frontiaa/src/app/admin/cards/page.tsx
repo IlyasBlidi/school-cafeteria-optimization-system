@@ -12,17 +12,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
+import { ArrowUpDown, ChevronDown,} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -34,13 +29,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardForTable } from "@/api/types";
+import { Card, CardForTable } from "@/types/types";
 import { cardService } from "@/services/cardService";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/adminSidebar/appSidebar";
-import Link from "next/link";
 import { DialogDemo } from "@/components/dialogDemo/dialogDemo";
-import { DialogTrigger } from "@/components/ui/dialog";
 import { CardProvider } from "@/Contexts/CardContext";
 
 export type Payment = {
@@ -122,12 +115,11 @@ const Home: React.FC = () => {
           id: card.id,
           balance: card.balance,
           lastUpdateDate: card.lastUpdateDate,
-          userEmail: card.user.email, // Extract the email from the nested user object
+          userEmail: card.user.email, 
         })
       );
-
-      console.log(transformedData); // Debugging: Check the transformed data
-      setCards(transformedData); // Update the state with transformed data
+      
+      setCards(transformedData); 
     } catch (error) {
       console.error("Error fetching cards:", error);
     }
