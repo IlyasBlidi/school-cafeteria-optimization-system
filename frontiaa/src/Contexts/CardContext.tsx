@@ -1,5 +1,5 @@
+import { CardBody } from "@/types/types";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { CardBody } from "@/api/types";
 
 type CardContextType = {
   cardData: CardBody | null;
