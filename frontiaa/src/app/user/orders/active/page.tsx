@@ -13,7 +13,7 @@ import { AlertCircle } from "lucide-react";
 import { CommandRecieved, Status } from "@/types/types";
 import { useWebSocket } from "@/hooks/useSocketHook";
 import { commandService } from "@/services/commandService";
-import { user } from "@/components/userSidebar/data";
+import { user } from "@/lib/utils";
 
 const OrderRow = ({ order }: { order: CommandRecieved }) => {
   return (

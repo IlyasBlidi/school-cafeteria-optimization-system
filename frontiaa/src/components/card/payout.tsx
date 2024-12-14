@@ -160,64 +160,6 @@ export default function PayoutSection() {
             </div>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-4">
-          <Link
-            className="p-4 rounded-xl border text-center hover:bg-gray-50"
-            href={
-              data.navMain
-                .find((nav) => nav.title === "Menu")
-                ?.items.find((item) => item.title === "Items")?.url || "#"
-            }
-          >
-            <button>
-              <span className="block mb-1">📋</span>
-              <span className="text-sm">View Menu</span>
-            </button>
-          </Link>
-          <DialogDemo cardId={cardData?.cardId} />
-        </div>
-
-        {/* Recent Transactions */}
-        <div className="space-y-4">
-          <h3 className="font-medium">Recent Transactions</h3>
-          <div className="space-y-3">
-            {[
-              {
-                title: "Lunch Menu",
-                location: "Main Cafeteria",
-                time: "Today, 12:36",
-                amount: -8.5,
-              },
-              {
-                title: "Breakfast",
-                location: "Coffee Shop",
-                time: "Today, 08:30",
-                amount: -4.2,
-              },
-              {
-                title: "Balance Added",
-                location: "Online Top-up",
-                time: "Yesterday",
-                amount: 50,
-              },
-            ].map((tx, i) => (
-              <div key={i} className="flex justify-between py-3 border-b">
-                <div>
-                  <p className="font-medium">{tx.title}</p>
-                  <p className="text-sm text-gray-500">
-                    {tx.location} • {tx.time}
-                  </p>
-                </div>
-                <p className={tx.amount > 0 ? "text-green-500" : ""}>
-                  {tx.amount > 0 ? "+" : ""}
-                  {tx.amount}dh
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </main>
   );
