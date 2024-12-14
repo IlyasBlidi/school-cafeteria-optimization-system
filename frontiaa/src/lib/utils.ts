@@ -1,32 +1,31 @@
-import { Notification } from "@/types/types";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { Card, Notification } from "@/types/types";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { create } from "zustand";
 
-
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const categoryIcons: { [key: string]: string } = {
-  "Breakfast": "🍳",
-  "Lunch": "🍱",
-  "Dinner": "🍽️",
-  "Soup": "🥣",
-  "Desserts": "🍨",
+  Breakfast: "🍳",
+  Lunch: "🍱",
+  Dinner: "🍽️",
+  Soup: "🥣",
+  Desserts: "🍨",
   "Side Dishes": "🥗",
-  "Appetizer": "🥟",
-  "Beverages": "☕",
-  "Snacks": "🥨",
-  "VIP Menu": "👑"
+  Appetizer: "🥟",
+  Beverages: "☕",
+  Snacks: "🥨",
+  "VIP Menu": "👑",
 };
 
 const getUserData = () => {
   try {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     return userData ? JSON.parse(userData) : null;
   } catch (error) {
-    console.error('Error parsing user data:', error);
+    console.error("Error parsing user data:", error);
     return null;
   }
 };
@@ -46,4 +45,9 @@ export const useNotificationStore = create<NotificationStore>((set) => ({
       notifications: [notification, ...state.notifications],
     })),
   setNotifications: (notifications) => set({ notifications }),
+}));
+
+export const useBalanceStore = create((set) => ({
+  balance: 0,
+  setBalance: (balance: number) => set({ balance }),
 }));

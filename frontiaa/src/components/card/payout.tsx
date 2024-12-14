@@ -1,14 +1,80 @@
 import Link from "next/link";
 import data from "../adminSidebar/data";
-import { user } from "@/lib/utils";
+import { useBalanceStore, user } from "@/lib/utils";
 import { cardService } from "@/services/cardService";
 import { useEffect } from "react";
 import { useCard } from "@/Contexts/CardContext";
 import { DialogDemo } from "../dialogDemo/dialogDemo";
+import { toast } from "@/hooks/use-toast";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { Card } from "@/types/types";
+
+function WebSocketBalance() {
+  const { setBalance } = useBalanceStore();
+  useEffect(() => {
+    const token = user.token;
+    if (!token) {
+      console.error("Token undefined!");
+      return;
+    }
+
+    const client = new Client({
+      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      connectHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+      debug: (str) => {
+        console.log("STOMP Debug:", str);
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      onConnect: () => {
+        console.log("Connected to WebSocket");
+
+        client.subscribe(`/user/${user.email}/queue/card`, (message) => {
+          try {
+            const card = JSON.parse(message.body) as Card;
+            console.log("Received notification:", card);
+
+            setBalance(card.balance);
+
+            toast("Balance changed", {
+              duration: 3000,
+            });
+          } catch (error) {
+            console.error("Error parsing notification:", error);
+          }
+        });
+
+        fetch(`http://localhost:8080/api/v1/cards/${user.identifier}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => setBalance(data.balance))
+          .catch((error) => console.error("Fetch error:", error));
+      },
+    });
+
+    client.activate();
+
+    return () => {
+      if (client.connected) {
+        client.deactivate();
+      }
+    };
+  }, [setBalance]);
+
+  return null;
+}
 
 export default function PayoutSection() {
   // Preserve the card context functionality from HEAD
   const { cardData, setCardData } = useCard();
+  const balance = useBalanceStore((state: any) => state.balance);
 
   const fetchCardData = async () => {
     try {
@@ -29,6 +95,7 @@ export default function PayoutSection() {
 
   return (
     <main className="font-general-sans flex-1 p-4">
+      <WebSocketBalance />
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Card Display Section - Using Dev branch styling with HEAD data */}
         <div className="border bg-gray-100 rounded-xl p-5 text-black relative overflow-hidden">
@@ -58,7 +125,7 @@ export default function PayoutSection() {
 
           <div className="flex flex-row justify-between items-end">
             <h2 className="text-[60px] font-medium">
-              {cardData ? `${cardData.balance.toFixed(2)}dh` : "Loading..."}
+              {cardData ? `${balance.toFixed(2)}dh` : "Loading..."}
             </h2>
           </div>
 
