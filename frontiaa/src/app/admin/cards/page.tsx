@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown,} from "lucide-react";
+import { ArrowUpDown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -46,21 +46,21 @@ export type Payment = {
 export const columns: ColumnDef<CardForTable>[] = [
   {
     accessorKey: "balance",
-    header: () => <div className="text-center bg-teal-100">Balance (MAD)</div>,
+    header: () => <div className="text-center">Balance (MAD)</div>,
     cell: ({ row }) => {
       const balance = parseFloat(row.getValue("balance"));
       const formatted = new Intl.NumberFormat("fr-MA", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }).format(balance);
-      return <div className="text-left font-medium">{formatted}</div>;
+      return <div className="text-center font-medium">{formatted}</div>;
     },
   },
   {
     accessorKey: "lastUpdateDate",
-    header: () => <div className="text-center bg-blue-100">Last update</div>,
+    header: () => <div className="text-center">Last update</div>,
     cell: ({ row }) => (
-      <div className="text-left">
+      <div className="text-center">
         {new Date(row.getValue("lastUpdateDate")).toLocaleDateString()}
       </div>
     ),
@@ -69,7 +69,7 @@ export const columns: ColumnDef<CardForTable>[] = [
     accessorKey: "userEmail",
     header: ({ column }) => {
       return (
-        <div className="flex items-center text-center justify-center bg-teal-100">
+        <div className="flex items-center text-center justify-center">
           <span
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="flex items-center gap-x-1 cursor-pointer select-none"
@@ -115,11 +115,11 @@ const Home: React.FC = () => {
           id: card.id,
           balance: card.balance,
           lastUpdateDate: card.lastUpdateDate,
-          userEmail: card.user.email, 
+          userEmail: card.user.email,
         })
       );
-      
-      setCards(transformedData); 
+
+      setCards(transformedData);
     } catch (error) {
       console.error("Error fetching cards:", error);
     }
@@ -127,7 +127,7 @@ const Home: React.FC = () => {
 
   React.useEffect(() => {
     fetchAllCards();
-  }, [cards]);
+  }, []);
 
   const table = useReactTable({
     data: cards,
@@ -201,7 +201,7 @@ const Home: React.FC = () => {
                         return (
                           <TableHead
                             key={header.id}
-                            className="w-1/4 bg-slate-100"
+                            className="w-1/4 bg-slate-100 text-center"
                           >
                             {header.isPlaceholder
                               ? null
@@ -223,7 +223,7 @@ const Home: React.FC = () => {
                         data-state={row.getIsSelected() && "selected"}
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <TableCell key={cell.id} className="text-center">
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
