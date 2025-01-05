@@ -38,20 +38,10 @@ import {
         ],
       },
       {
-        title: "Kitchen",
-        url: "/kitchen",
+        title: "Cards",
+        url: "/admin/cards",
         icon: KanbanSquare,
         isActive: true,
-        items: [
-          {
-            title: "Staff",
-            url: "/kitchen/staff",
-          },
-          {
-            title: "Inventory",
-            url: "/kitchen/inventory",
-          }
-        ],
       },
       {
         title: "Menu",

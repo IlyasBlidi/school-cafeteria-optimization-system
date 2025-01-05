@@ -53,6 +53,7 @@ export interface Order {
 }
 
 export interface Notification {
+  read: any;
   id: number;
   type: string;
   title: string;
@@ -173,8 +174,10 @@ export interface Card {
 }
 
 export interface CardForTable {
+  userId: string;
   id: string;
   balance: number;
   lastUpdateDate: string;
   userEmail: string;
 }
+

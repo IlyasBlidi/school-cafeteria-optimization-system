@@ -1,3 +1,4 @@
+'use client'
 import { Notification } from '@/types/types';
 import React, { createContext, useContext, useState, useCallback } from 'react';
 

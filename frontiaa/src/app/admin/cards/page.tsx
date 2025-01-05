@@ -46,7 +46,7 @@ export type Payment = {
 export const columns: ColumnDef<CardForTable>[] = [
   {
     accessorKey: "balance",
-    header: () => <div className="text-center bg-teal-100">Balance (MAD)</div>,
+    header: () => <div className="text-center">Balance (MAD)</div>,
     cell: ({ row }) => {
       const balance = parseFloat(row.getValue("balance"));
       const formatted = new Intl.NumberFormat("fr-MA", {
@@ -58,7 +58,7 @@ export const columns: ColumnDef<CardForTable>[] = [
   },
   {
     accessorKey: "lastUpdateDate",
-    header: () => <div className="text-center bg-blue-100">Last update</div>,
+    header: () => <div className="text-center">Last update</div>,
     cell: ({ row }) => (
       <div className="text-left">
         {new Date(row.getValue("lastUpdateDate")).toLocaleDateString()}
@@ -69,7 +69,7 @@ export const columns: ColumnDef<CardForTable>[] = [
     accessorKey: "userEmail",
     header: ({ column }) => {
       return (
-        <div className="flex items-center text-center justify-center bg-teal-100">
+        <div className="flex items-center text-center justify-center">
           <span
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="flex items-center gap-x-1 cursor-pointer select-none"

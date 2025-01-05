@@ -1,6 +1,9 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { NotificationProvider } from "@/Contexts/NotificationContext";
+import NotificationComponent from "@/components/notificationComponent";
 
 export const metadata: Metadata = {
   title: "Wufu :)",
@@ -21,8 +24,11 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        <Toaster />
+        <NotificationProvider>
+          <NotificationComponent />
+          {children}
+          <Toaster />
+        </NotificationProvider>
       </body>
     </html>
   );
