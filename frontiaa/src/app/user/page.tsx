@@ -31,6 +31,9 @@ import { NotificationCenter } from "@/components/ui/notification";
 import { NotificationProvider } from "@/Contexts/NotificationContext";
 import { Button } from "@/components/ui/button";
 import { commandService } from "@/services/commandService";
+import { CardProvider, useCard } from "@/Contexts/CardContext";
+import { cardService } from "@/services/cardService";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const MenuCategories: React.FC<MenuCategoriesProps> = ({
   activeCategory,
@@ -54,6 +57,7 @@ const MenuCategories: React.FC<MenuCategoriesProps> = ({
   }
 
   return (
+
     <div className="font-general-sans w-full max-w-screen-xl mx-auto px-4 sm:px-7">
       <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
         {categories.map((category) => (
@@ -61,20 +65,18 @@ const MenuCategories: React.FC<MenuCategoriesProps> = ({
             key={category.id}
             onClick={() => onCategoryChange(category.id)}
             className={`flex p-2 sm:p-4 rounded-lg border transition-all hover:shadow-md
-              ${
-                activeCategory === category.id
-                  ? "bg-blue-500 border-blue-600 text-white"
-                  : "bg-white border-gray-200 hover:border-blue-200"
+              ${activeCategory === category.id
+                ? "bg-blue-500 border-blue-600 text-white"
+                : "bg-white border-gray-200 hover:border-blue-200"
               }`}
           >
             <div className="flex gap-3 w-full items-center">
               <div className="flex items-center justify-center w-full sm:w-auto">
                 <span
-                  className={`inline-flex ${
-                    activeCategory === category.id
-                      ? "text-white"
-                      : "text-blue-500"
-                  }`}
+                  className={`inline-flex ${activeCategory === category.id
+                    ? "text-white"
+                    : "text-blue-500"
+                    }`}
                 >
                   {categoryIcons[category.name] || (
                     <UtensilsCrossed className="w-5 h-5" />
@@ -85,11 +87,10 @@ const MenuCategories: React.FC<MenuCategoriesProps> = ({
               <div className="hidden sm:flex flex-col items-start">
                 <span className="text-sm font-medium">{category.name}</span>
                 <span
-                  className={`text-xs mt-0.5 text-start ${
-                    activeCategory === category.id
-                      ? "text-blue-100"
-                      : "text-gray-500"
-                  }`}
+                  className={`text-xs mt-0.5 text-start ${activeCategory === category.id
+                    ? "text-blue-100"
+                    : "text-gray-500"
+                    }`}
                 >
                   {category.description}
                 </span>
@@ -107,6 +108,10 @@ const MenuPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [orderedDishes, setOrderedDishes] = useState<OrderedDish[]>([]);
+  const [total, setTotal] = useState(0)
+  const { cardData, setCardData } = useCard();
+
+
 
   useEffect(() => {
     fetchArticles();
@@ -120,6 +125,30 @@ const MenuPage = () => {
       setFilteredArticles(filtered);
     }
   }, [activeCategory]);
+
+  useEffect(() => {
+    setTotal(orderedDishes.reduce((acc, curr) => acc + curr.article.price * curr.quantity, 0))
+  }, [orderedDishes]);
+
+  console.log("Total" + total)
+
+
+  const fetchCardData = async () => {
+    try {
+      const { data: cardResponse } = await cardService.getCardByUserId(
+        user.identifier
+      );
+      setCardData(cardResponse);
+    } catch (error) {
+      console.error("Error fetching user card:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!cardData) {
+      fetchCardData(); // Fetch card data only if it's not already fetched
+    }
+  }, [cardData]);
 
   async function fetchArticles() {
     try {
@@ -142,7 +171,7 @@ const MenuPage = () => {
       })),
     };
     const AddNewCommandResponse = await commandService.addNewCommand(command);
-    console.log("Command added with ID: " + AddNewCommandResponse.data.status);
+    console.log("Command added with ID: " + JSON.stringify(AddNewCommandResponse.data));
     clearOrder();
   }
 
@@ -175,153 +204,167 @@ const MenuPage = () => {
   return (
     <SidebarProvider>
       <NotificationProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <div className="font-general-sans flex flex-col h-full">
-            <header className="sticky top-0 z-10 bg-white border-b">
-              <div className="flex items-center justify-between h-16 px-4">
-                <div className="flex items-center">
-                  <SidebarTrigger className="-ml-1" />
-                  <Separator orientation="vertical" className="mx-2 h-4" />
-                  <h1 className="text-lg font-semibold">Menu</h1>
-                </div>
-                <div className="flex items-center gap-4">
-                  <NotificationCenter />
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 focus-visible:ring-0 focus-visible:ring-offset-0"
-                      >
-                        <ShoppingCart className="h-5 w-5" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent className="w-full sm:max-w-md p-0 border-l">
-                      <div className="flex flex-col h-full">
-                        <div className="relative p-6 rounded-b-3xl">
-                          <SheetHeader className="mb-0">
-                            <SheetTitle className="text-2xl font-medium bg-clip-text text-black">
-                              Your Order
-                            </SheetTitle>
-                            <SheetDescription className="text-gray-600">
-                              Review your order before confirming
-                            </SheetDescription>
-                          </SheetHeader>
-                          <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full" />
-                        </div>
-                        <div className="flex-1 overflow-auto px-6">
-                          <div className="py-6 space-y-6">
-                            {orderedDishes.length > 0 ? (
-                              orderedDishes.map((dish, index) => (
-                                <div
-                                  key={index}
-                                  className="group relative bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                      <span className="font-semibold text-gray-900">
-                                        {dish.article.title}
-                                      </span>
-                                      <span className="text-sm text-gray-500">
-                                        Quantity: {dish.quantity}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center">
-                                      <span className="font-medium text-blue-600">
-                                        {(
-                                          dish.article.price * dish.quantity
-                                        ).toFixed(2)}
-                                        dh
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <button
-                                    onClick={() =>
-                                      handleDeleteOrder(dish.article.id)
-                                    }
-                                    className="absolute -right-2 -top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-100 text-red-600 rounded-full p-1.5 hover:bg-red-200"
-                                  >
-                                    <X className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              ))
-                            ) : (
-                              <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <div className="bg-gray-50 rounded-full p-6 mb-4">
-                                  <ShoppingCart className="w-8 h-8 text-gray-400" />
-                                </div>
-                                <p className="text-gray-500">
-                                  Your cart is empty
-                                </p>
-                              </div>
-                            )}
+          <AppSidebar />
+          <SidebarInset>
+            <div className="font-general-sans flex flex-col h-full">
+              <header className="sticky top-0 z-10 bg-white border-b">
+                <div className="flex items-center justify-between h-16 px-4">
+                  <div className="flex items-center">
+                    <SidebarTrigger className="-ml-1" />
+                    <Separator orientation="vertical" className="mx-2 h-4" />
+                    <h1 className="text-lg font-semibold">Menu</h1>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <NotificationCenter />
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        >
+                          <ShoppingCart className="h-5 w-5" />
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent className="w-full sm:max-w-md p-0 border-l">
+                        <div className="flex flex-col h-full">
+                          <div className="relative p-6 rounded-b-3xl">
+                            <SheetHeader className="mb-0">
+                              <SheetTitle className="text-2xl font-medium bg-clip-text text-black">
+                                Your Order
+                              </SheetTitle>
+                              <SheetDescription className="text-gray-600">
+                                Review your order before confirming
+                              </SheetDescription>
+                            </SheetHeader>
+                            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full" />
                           </div>
-                        </div>
-                        {orderedDishes.length > 0 && (
-                          <div className="border-t bg-gray-50/80 backdrop-blur-sm p-6 rounded-t-3xl">
-                            <div className="space-y-4">
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-600">
-                                  Total Amount
-                                </span>
-                                <span className="text-xl font-medium text-gray-900">
-                                  {orderedDishes
-                                    .reduce(
-                                      (total, dish) =>
-                                        total +
-                                        dish.article.price * dish.quantity,
-                                      0
-                                    )
-                                    .toFixed(2)}
-                                  dh
-                                </span>
-                              </div>
-                              <div className="space-y-2">
-                                <button
-                                  onClick={handleConfirmOrder}
-                                  className="w-full h-12 text-base font-medium bg-green-300 text-green-800 rounded-xl"
-                                >
-                                  Confirm Order
-                                </button>
-                                <button
-                                  onClick={clearOrder}
-                                  className="w-full h-12 text-base font-medium bg-white border-2 border-gray-200 text-gray-600 rounded-xl"
-                                >
-                                  Clear Order
-                                </button>
-                              </div>
+                          <div className="flex-1 overflow-auto px-6">
+                            <div className="py-6 space-y-6">
+                              {orderedDishes.length > 0 ? (
+                                orderedDishes.map((dish, index) => (
+                                  <div
+                                    key={index}
+                                    className="group relative bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all"
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex flex-col">
+                                        <span className="font-semibold text-gray-900">
+                                          {dish.article.title}
+                                        </span>
+                                        <span className="text-sm text-gray-500">
+                                          Quantity: {dish.quantity}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center">
+                                        <span className="font-medium text-blue-600">
+                                          {(
+                                            dish.article.price * dish.quantity
+                                          ).toFixed(2)}
+                                          dh
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteOrder(dish.article.id)
+                                      }
+                                      className="absolute -right-2 -top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-100 text-red-600 rounded-full p-1.5 hover:bg-red-200"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="flex flex-col items-center justify-center py-12 text-center">
+                                  <div className="bg-gray-50 rounded-full p-6 mb-4">
+                                    <ShoppingCart className="w-8 h-8 text-gray-400" />
+                                  </div>
+                                  <p className="text-gray-500">
+                                    Your cart is empty
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           </div>
-                        )}
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-              </div>
-            </header>
+                          {orderedDishes.length > 0 && (
+                            <div className="border-t bg-gray-50/80 backdrop-blur-sm p-6 rounded-t-3xl">
+                              <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-600">
+                                    Total Amount
+                                  </span>
+                                  <span className="text-xl font-medium text-gray-900">
+                                    {total.toFixed(2)}
+                                    dh
+                                  </span>
+                                </div>
+                                <div className="space-y-2">
+                                  {(cardData ? cardData.balance >= total : "...") ?
+                                    <button
+                                      onClick={handleConfirmOrder}
+                                      className="w-full h-12 text-base font-medium bg-green-300 text-green-800 rounded-xl"
+                                    >
+                                      Confirm Order
+                                    </button>
+                                    :
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger className="w-full">
+                                          <button
 
-            <main className="flex-1 p-4">
-              <div className="py-4">
-                <MenuCategories
-                  activeCategory={activeCategory}
-                  onCategoryChange={setActiveCategory}
-                />
-              </div>
-              <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {filteredArticles.map((article) => (
-                  <DishCard
-                    key={article.id}
-                    article={article}
-                    onAddToOrder={handleAddToOrder}
+                                            className="w-full h-12 cursor-not-allowed text-base font-medium bg-red-300 text-red-800 rounded-xl"
+                                          >
+                                            Not Enough Balance
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className=" bg-red-300 text-red-800">
+                                          <p className="text-base font-medium">{cardData ? cardData.balance : "..."}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+
+                                  }
+
+                                  <button
+                                    onClick={clearOrder}
+                                    className="w-full h-12 text-base font-medium bg-white border-2 border-gray-200 text-gray-600 rounded-xl"
+                                  >
+                                    Clear Order
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </SheetContent>
+                    </Sheet>
+                  </div>
+                </div>
+              </header>
+
+              <main className="flex-1 p-4">
+                <div className="py-4">
+                  <MenuCategories
+                    activeCategory={activeCategory}
+                    onCategoryChange={setActiveCategory}
                   />
-                ))}
-              </div>
-            </main>
-          </div>
-        </SidebarInset>
+                </div>
+                <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+                  {filteredArticles.map((article) => (
+                    <DishCard
+                      key={article.id}
+                      article={article}
+                      onAddToOrder={handleAddToOrder}
+                    />
+                  ))}
+                </div>
+              </main>
+            </div>
+          </SidebarInset>
       </NotificationProvider>
     </SidebarProvider>
+
   );
 };
 

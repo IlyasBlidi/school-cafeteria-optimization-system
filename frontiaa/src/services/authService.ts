@@ -9,6 +9,9 @@ export const authService = {
         API_ENDPOINTS.AUTH.LOGIN,
         credentials
       );
+
+      
+
       localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (error: any) {
