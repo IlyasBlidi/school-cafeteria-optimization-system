@@ -25,7 +25,6 @@ export default function RootLayout({
       </head>
       <body>
         <NotificationProvider>
-          <NotificationComponent />
           {children}
           <Toaster />
         </NotificationProvider>
