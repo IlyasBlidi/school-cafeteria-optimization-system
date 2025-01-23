@@ -157,29 +157,6 @@ sariaa/
 - 💹 Financial reporting
 - 👥 User management
 
-## 🎯 Development Timeline
-
-- **Phase 1** (Oct 15-30): Basic infrastructure and authentication
-- **Phase 2** (Nov 1-15): Payment system and order management
-- **Phase 3** (Nov 16-30): Recommendation system and optimization
-- **Final Phase** (December): Testing and deployment
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-For any queries regarding this project, please contact:
-
-- 📧 [Project Email]
-- 💼 [LinkedIn Profile]
-- 🐦 [Twitter Handle]
-
 ---
 
 <div align="center">
