@@ -76,8 +76,8 @@ Frew is a cutting-edge cafeteria digitalization platform designed to transform t
 1. Clone the repository
 
 ```bash
-git clone https://github.com/IlyasBlidi/sariaa.git
-cd frew
+git clone https://github.com/IlyasBlidi/school-cafeteria-optimization-system.git
+cd school-cafeteria-optimization-system
 ```
 
 2. Setup Frontend
